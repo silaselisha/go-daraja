@@ -1,9 +1,23 @@
 package main
 
 import (
+	"fmt"
+	"log"
+
+	"github.com/silaselisha/go-daraja/pkg/util"
 	"github.com/silaselisha/go-daraja/pkg/auth"
 )
 
 func main() {
-	auth.NewDarajaAuth(auth.URL, auth.AUTHORIZATION_TOKEN)
+	configs, err := util.LoadConfigs("./..")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	consumerKey := configs.DarajaConsumerKey
+	consumerSecret := configs.DarajaConsumerSecret
+	authToken := util.GenAuthorizationToken(consumerKey, consumerSecret)
+	fmt.Print(authToken)
+	res, _ := auth.NewDarajaAuth(auth.URL, authToken)
+	fmt.Println(res)
 }
