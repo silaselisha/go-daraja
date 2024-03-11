@@ -1,4 +1,4 @@
-package auth
+package handler
 
 import (
 	"fmt"
@@ -35,7 +35,7 @@ func TestAuth(t *testing.T) {
 			url:       fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "/oauth/v1/generate?grant_type=client_credentials"),
 			authToken: "Basic cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==",
 			check: func(t *testing.T, response any, err error) {
-				res := response.(*DarajaAuth)
+				res := response.(DarajaAuth).(*Client)
 				require.NotEmpty(t, res)
 				require.NoError(t, err)
 			},
@@ -45,7 +45,7 @@ func TestAuth(t *testing.T) {
 			url:       fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "/oauth/v1/generate?grant_type=client_credentials"),
 			authToken: "Baerer   cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==",
 			check: func(t *testing.T, response any, err error) {
-				res := response.(*DarajaAuth)
+				res := response.(DarajaAuth).(*Client)
 				require.NoError(t, err)
 				require.Equal(t, "Invalid Authentication passed", res.ErrorMessage)
 				require.Equal(t, "400.008.01", res.ErrorCode)
@@ -57,7 +57,8 @@ func TestAuth(t *testing.T) {
 			url:       fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "/oauth/v1/generate?grant_type=client_credentialss"),
 			authToken: "Basic   cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==",
 			check: func(t *testing.T, response any, err error) {
-				res := response.(*DarajaAuth)
+				res := response.(DarajaAuth).(*Client)
+				
 				require.NoError(t, err)
 				require.Equal(t, "Invalid grant type passed", res.ErrorMessage)
 				require.Equal(t, "400.008.02", res.ErrorCode)
@@ -69,10 +70,9 @@ func TestAuth(t *testing.T) {
 			url:       "sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
 			authToken: "Basic   cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==",
 			check: func(t *testing.T, response any, err error) {
-				res := response.(*DarajaAuth)
-				fmt.Print(err)
+				res := response
 				require.Error(t, err)
-				require.Empty(t, res)
+				require.Equal(t, nil, res)
 			},
 		},
 	}

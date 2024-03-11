@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/silaselisha/go-daraja/util"
-	"github.com/silaselisha/go-daraja/pkg/auth"
+	"github.com/silaselisha/go-daraja/pkg/handler"
 )
 
 func main() {
@@ -18,6 +18,6 @@ func main() {
 	consumerSecret := configs.DarajaConsumerSecret
 	authToken := util.GenAuthorizationToken(consumerKey, consumerSecret)
 	fmt.Print(authToken)
-	res, _ := auth.NewDarajaAuth(auth.URL, authToken)
+	res, _ := handler.NewDarajaAuth(handler.URL, authToken)
 	fmt.Println(res)
 }
