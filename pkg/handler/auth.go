@@ -1,4 +1,4 @@
-package auth
+package handler
 
 import (
 	"encoding/json"
@@ -7,19 +7,11 @@ import (
 	"net/http"
 )
 
-type DarajaAuth struct {
-	AccessToken  string `json:"access_token,omitempty"`
-	ExpiresIn    string `json:"expires_in,omitempty"`
-	RequestID    string `json:"requestId,omitempty"`
-	ErrorCode    string `json:"errorCode,omitempty"`
-	ErrorMessage string `json:"errorMessage,omitempty"`
-}
-
 const (
 	URL                 = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
 )
 
-func NewDarajaAuth(url string, authToken string) (*DarajaAuth, error) {
+func NewDarajaAuth(url string, authToken string) (DarajaAuth, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -43,7 +35,7 @@ func NewDarajaAuth(url string, authToken string) (*DarajaAuth, error) {
 		return nil, err
 	}
 
-	var result *DarajaAuth
+	var result *Client
 	json.Unmarshal(body, &result)
 	return result, nil
 }
