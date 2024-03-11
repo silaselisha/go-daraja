@@ -2,7 +2,9 @@ package util
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
+	"regexp"
 )
 
 func GenAuthorizationToken(consumerKey, consumerSecret string) string {
@@ -29,4 +31,15 @@ func BaseUrlBuilder(environment string) string {
 	}
 
 	return baseURL
+}
+
+func PhoneNumberFormatter(phoneNumber string) (string, error) {
+	// format the phoneNumber to 2547XXXXXXXX
+	re := regexp.MustCompile(`^(07|01)\d{8}$`)
+	if !re.MatchString(phoneNumber) {
+		err := errors.New("invalid phone number")
+		return "", err
+	}
+
+	return fmt.Sprintf("%s%s", "254", phoneNumber[1:]), nil
 }
