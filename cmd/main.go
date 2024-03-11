@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/silaselisha/go-daraja/pkg/util"
+	"github.com/silaselisha/go-daraja/util"
 	"github.com/silaselisha/go-daraja/pkg/auth"
 )
 
