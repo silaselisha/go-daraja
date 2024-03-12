@@ -12,6 +12,7 @@ type Configs struct {
 	DarajaCallBackURL       string `mapstructure:"DARAJA_CALL_BACK_URL"`
 	DarajaPartyB            string `mapstructure:"DARAJA_PARTY_B"`
 	DarajaTimestamp         string `mapstructure:"DARAJA_TIMESTAMP"`
+	DarajaAccountRef        string `mapstructure:"DARAJA_ACCOUNT_REF"`
 }
 
 func LoadConfigs(path string) (envs *Configs, err error) {

@@ -1,7 +1,7 @@
 package handler
 
 type DarajaAuth interface {
-	MpesaExpress(description, phoneNumber string, amount float64) (*StkCallback, error)
+	MpesaExpress(description, phoneNumber string, amount float64) (*[]byte, error)
 }
 
 type Client struct {
@@ -13,32 +13,35 @@ type Client struct {
 }
 
 type StkCallback struct {
-	MerchantRequestID string           `json:"merchant_request_id"`
-	CheckoutRequestID string           `json:"checkout_request_id"`
-	ResultCode        int64            `json:"result_code"`
-	ResultDesc        string           `json:"result_desc"`
-	CallbackMetadata  CallbackMetadata `json:"callback_metadata"`
+	MerchantRequestID string           `json:"merchant_request_id,omitempty"`
+	CheckoutRequestID string           `json:"checkout_request_id,omitempty"`
+	ResultCode        int64            `json:"result_code,omitempty"`
+	ResultDesc        string           `json:"result_desc,omitempty"`
+	CallbackMetadata  CallbackMetadata `json:"callback_metadata,omitempty"`
+	RequestID         string           `json:"requestId,omitempty"`
+	ErrorCode         string           `json:"errorCode,omitempty"`
+	ErrorMessage      string           `json:"errorMessage,omitempty"`
 }
 
 type CallbackMetadata struct {
-	Item []Item `json:"item"`
+	Item []Item `json:"item,omitempty"`
 }
 
 type Item struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
+	Name  string `json:"name,omitempty"`
+	Value string `json:"value,omitempty"`
 }
 
 type ExpressReqParams struct {
-	BusinessShortCode string `json:"business_short_code"`
-	Password          string `json:"password"`
-	Timestamp         string `json:"timestamp"`
-	TransactionType   string `json:"transaction_type"`
-	Amount            string `json:"amount"`
-	PartyA            string `json:"party_a"`
-	PartyB            string `json:"party_b"`
-	PhoneNumber       string `json:"phone_number"`
-	CallBackURL       string `json:"call_back_url"`
-	AccountReference  string `json:"account_reference"`
-	TransactionDesc   string `json:"transaction_desc"`
+	BusinessShortCode string
+	Password          string
+	Timestamp         string
+	TransactionType   string
+	Amount            float64
+	PartyA            string
+	PartyB            string
+	PhoneNumber       string
+	CallBackURL       string
+	AccountReference  string
+	TransactionDesc   string
 }

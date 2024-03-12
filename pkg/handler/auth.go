@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	URL                 = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+	URL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
 )
 
 func NewDarajaAuth(url string, authToken string) (DarajaAuth, error) {
@@ -19,7 +19,7 @@ func NewDarajaAuth(url string, authToken string) (DarajaAuth, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Basic " + authToken)
+	req.Header.Set("Authorization", "Basic "+authToken)
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
