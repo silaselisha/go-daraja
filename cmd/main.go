@@ -16,7 +16,7 @@ func main() {
 	}
 
 	authToken := util.GenAuthorizationToken(configs.DarajaConsumerKey, configs.DarajaConsumerSecret)
-	res, err := handler.NewDarajaAuth(handler.URL, authToken)
+	res, err := handler.NewDarajaAuth(authToken)
 	if err != nil {
 		log.Print(err)
 		return
