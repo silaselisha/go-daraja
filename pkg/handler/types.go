@@ -1,7 +1,7 @@
 package handler
 
 type DarajaAuth interface {
-	MpesaExpress(description, phoneNumber string, amount float64) (*[]byte, error)
+	MpesaExpress(description, phoneNumber string, amount float64) ([]byte, error)
 }
 
 type Client struct {
@@ -13,14 +13,17 @@ type Client struct {
 }
 
 type StkCallback struct {
-	MerchantRequestID string           `json:"merchant_request_id,omitempty"`
-	CheckoutRequestID string           `json:"checkout_request_id,omitempty"`
-	ResultCode        int64            `json:"result_code,omitempty"`
-	ResultDesc        string           `json:"result_desc,omitempty"`
-	CallbackMetadata  CallbackMetadata `json:"callback_metadata,omitempty"`
-	RequestID         string           `json:"requestId,omitempty"`
-	ErrorCode         string           `json:"errorCode,omitempty"`
-	ErrorMessage      string           `json:"errorMessage,omitempty"`
+	MerchantRequestID   string `json:"MerchantRequestID"`
+	CheckoutRequestID   string `json:"CheckoutRequestID"`
+	ResponseCode        string `json:"ResponseCode"`
+	ResponseDescription string `json:"ResponseDescription"`
+	CustomerMessage     string `json:"CustomerMessage"`
+}
+
+type DarajaError struct {
+	RequestID    string `json:"requestId"`
+	ErrorCode    string `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
 }
 
 type CallbackMetadata struct {

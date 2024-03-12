@@ -11,15 +11,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var envs *util.Configs
-var err error
+var testEnvs *util.Configs
 
 func TestMain(m *testing.M) {
-	envs, err = util.LoadConfigs("./../..")
+	envs, err := util.LoadConfigs("./../..")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	testEnvs = envs
 	os.Exit(m.Run())
 }
 
@@ -32,7 +32,7 @@ func TestAuth(t *testing.T) {
 	}{
 		{
 			name:      "200 OK Auth Request",
-			url:       fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "/oauth/v1/generate?grant_type=client_credentials"),
+			url:       fmt.Sprintf("%s/%s", util.BaseUrlBuilder(testEnvs.DarajaEnvironment), "/oauth/v1/generate?grant_type=client_credentials"),
 			authToken: "Basic cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==",
 			check: func(t *testing.T, response any, err error) {
 				res := response.(DarajaAuth).(*Client)
@@ -42,7 +42,7 @@ func TestAuth(t *testing.T) {
 		},
 		{
 			name:      "Incorrect authorization type",
-			url:       fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "/oauth/v1/generate?grant_type=client_credentials"),
+			url:       fmt.Sprintf("%s/%s", util.BaseUrlBuilder(testEnvs.DarajaEnvironment), "/oauth/v1/generate?grant_type=client_credentials"),
 			authToken: "Baerer   cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==",
 			check: func(t *testing.T, response any, err error) {
 				res := response.(DarajaAuth).(*Client)
@@ -54,7 +54,7 @@ func TestAuth(t *testing.T) {
 		},
 		{
 			name:      "Incorrect grant type",
-			url:       fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "/oauth/v1/generate?grant_type=client_credentialss"),
+			url:       fmt.Sprintf("%s/%s", util.BaseUrlBuilder(testEnvs.DarajaEnvironment), "/oauth/v1/generate?grant_type=client_credentialss"),
 			authToken: "Basic   cFJZcjZ6anEwaThMMXp6d1FETUxwWkIzeVBDa2hNc2M6UmYyMkJmWm9nMHFRR2xWOQ==",
 			check: func(t *testing.T, response any, err error) {
 				res := response.(DarajaAuth).(*Client)
