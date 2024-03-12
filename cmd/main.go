@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/silaselisha/go-daraja/util"
 	"github.com/silaselisha/go-daraja/pkg/handler"
+	"github.com/silaselisha/go-daraja/util"
 )
 
 func main() {
@@ -14,10 +14,19 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	consumerKey := configs.DarajaConsumerKey
-	consumerSecret := configs.DarajaConsumerSecret
-	authToken := util.GenAuthorizationToken(consumerKey, consumerSecret)
-	fmt.Print(authToken)
-	res, _ := handler.NewDarajaAuth(handler.URL, authToken)
-	fmt.Println(res)
+
+	authToken := util.GenAuthorizationToken(configs.DarajaConsumerKey, configs.DarajaConsumerSecret)
+	res, err := handler.NewDarajaAuth(authToken)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	stk, err := res.MpesaExpress("Payment of X", "0708374149", 1)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	
+	fmt.Print(string(stk))
 }
