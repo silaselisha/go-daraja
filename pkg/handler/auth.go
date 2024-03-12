@@ -5,14 +5,22 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/silaselisha/go-daraja/util"
 )
 
 const (
 	URL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
 )
 
-func NewDarajaAuth(url string, authToken string) (DarajaAuth, error) {
+func NewDarajaAuth(authToken string) (DarajaAuth, error) {
 	client := &http.Client{}
+	envs, err := util.LoadConfigs("./../..")
+	if err != nil {
+		return nil, err
+	}
+
+	url := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
