@@ -28,5 +28,5 @@ func main() {
 		return
 	}
 	
-	fmt.Print(string(*stk))
+	fmt.Print(string(stk))
 }

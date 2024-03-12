@@ -12,13 +12,7 @@ import (
 	"github.com/silaselisha/go-daraja/util"
 )
 
-func (cl *Client) MpesaExpress(description, phoneNumber string, amount float64) (*[]byte, error) {
-	_, err := util.PhoneNumberFormatter(phoneNumber)
-	if err != nil {
-		fmt.Print(err)
-		return nil, err
-	}
-
+func (cl *Client) MpesaExpress(description, phoneNumber string, amount float64) ([]byte, error) {
 	envs, err := util.LoadConfigs("./../..")
 	if err != nil {
 		fmt.Print(err)
@@ -80,5 +74,5 @@ func (cl *Client) MpesaExpress(description, phoneNumber string, amount float64) 
 		return nil, err
 	}
 
-	return &resData, nil
+	return resData, nil
 }
