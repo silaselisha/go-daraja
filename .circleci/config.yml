@@ -38,9 +38,9 @@ jobs:
       - run:
           name: delete .env file
           command: rm -rf .env
-          
+
       - persist_to_workspace:
-          root: ~/go-daraja
+          root: ~/project
           paths:
             - "."
       
