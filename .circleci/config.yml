@@ -12,16 +12,16 @@ jobs:
       - run:
           name: create .env file
           command: |
-            echo "DARAJA_ENVIRONMENT" >> .env
-            echo "DARAJA_CONSUMER_KEY" >> .env
-            echo "DARAJA_CONSUMER_SECRET" >> .env
-            echo "DARAJA_BUSINESS_SHORT_CODE" >> .env
-            echo "DARAJA_PASS_KEY" >> .env
-            echo "DARAJA_TRANSACTION_TYPE" >> .env
-            echo "DARAJA_CALL_BACK_URL" >> .env
-            echo "DARAJA_PARTY_B" >> .env
-            echo "DARAJA_TIMESTAMP" >> .env
-            echo "DARAJA_ACCOUNT_REF" >> .env
+            echo "DARAJA_ENVIRONMENT=$DARAJA_ENVIRONMENT" >> .env
+            echo "DARAJA_CONSUMER_KEY=$DARAJA_CONSUMER_KEY" >> .env
+            echo "DARAJA_CONSUMER_SECRET=$DARAJA_CONSUMER_SECRET" >> .env
+            echo "DARAJA_BUSINESS_SHORT_CODE=$DARAJA_BUSINESS_SHORT_CODE" >> .env
+            echo "DARAJA_PASS_KEY=$DARAJA_PASS_KEY" >> .env
+            echo "DARAJA_TRANSACTION_TYPE=$DARAJA_TRANSACTION_TYPE" >> .env
+            echo "DARAJA_CALL_BACK_URL=$DARAJA_CALL_BACK_URL" >> .env
+            echo "DARAJA_PARTY_B=$DARAJA_PARTY_B" >> .env
+            echo "DARAJA_TIMESTAMP=$DARAJA_TIMESTAMP" >> .env
+            echo "DARAJA_ACCOUNT_REF=$DARAJA_ACCOUNT_REF" >> .env
 
       - go/load-cache
       - go/mod-download
