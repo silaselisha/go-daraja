@@ -34,7 +34,7 @@ jobs:
       - run:
           name: delete .env file
           command: rm .env
-          
+
       - persist_to_workspace:
           root: ~/go-daraja
           paths:
@@ -44,7 +44,7 @@ jobs:
 workflows:
   build:
     jobs:
-      - load_envs:
+      - build_and_test:
           context: go-daraja-test-envs
           
 
