@@ -30,6 +30,10 @@ jobs:
           covermode: atomic
           failfast: true
           race: true
+
+      - run:
+          name: list dirs
+          command: ls -la /home/circleci
           
       - persist_to_workspace:
           root: ~/go-daraja
