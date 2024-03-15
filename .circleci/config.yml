@@ -30,11 +30,7 @@ jobs:
           covermode: atomic
           failfast: true
           race: true
-
-      - run:
-          name: delete .env file
-          command: rm .env
-
+          
       - persist_to_workspace:
           root: ~/go-daraja
           paths:
