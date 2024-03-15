@@ -9,6 +9,20 @@ jobs:
 
     steps:
       - checkout
+      - run:
+          name: create .env file
+          command: |
+            echo "DARAJA_ENVIRONMENT" >> .env
+            echo "DARAJA_CONSUMER_KEY" >> .env
+            echo "DARAJA_CONSUMER_SECRET" >> .env
+            echo "DARAJA_BUSINESS_SHORT_CODE" >> .env
+            echo "DARAJA_PASS_KEY" >> .env
+            echo "DARAJA_TRANSACTION_TYPE" >> .env
+            echo "DARAJA_CALL_BACK_URL" >> .env
+            echo "DARAJA_PARTY_B" >> .env
+            echo "DARAJA_TIMESTAMP" >> .env
+            echo "DARAJA_ACCOUNT_REF" >> .env
+
       - go/load-cache
       - go/mod-download
       - go/save-cache
@@ -17,15 +31,21 @@ jobs:
           failfast: true
           race: true
 
+      - run:
+          name: delete .env file
+          command: rm .env
+          
       - persist_to_workspace:
           root: ~/go-daraja
           paths:
             - "."
+      
 
 workflows:
   build:
     jobs:
-      - build_and_test
+      - load_envs:
+          context: go-daraja-test-envs
           
 
 
