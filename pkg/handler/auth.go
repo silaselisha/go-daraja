@@ -20,6 +20,7 @@ func NewDarajaAuth(authToken string) (DarajaAuth, error) {
 		return nil, err
 	}
 
+	fmt.Println("envs " + envs.DarajaEnvironment)
 	url := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
