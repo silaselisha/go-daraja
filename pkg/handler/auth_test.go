@@ -13,7 +13,7 @@ import (
 var testEnvs *util.Configs
 
 func TestMain(m *testing.M) {
-	envs, err := util.LoadConfigs("./../..")
+	envs, err := util.LoadConfigs(os.Getenv(".env"))
 	if err != nil {
 		log.Fatal(err)
 	}
