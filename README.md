@@ -3,13 +3,13 @@
     <h1 style="font-size: 48px; font-weight: 800; padding: 0px;">Go-daraja</h1>
 </div>
 
-<div style="text-align: center; margin-top: 0px !important; margin-bottom: 14px;" align="center">
-<div style="text-align: center;" align="center">
-    <img src="https://img.shields.io/badge/logo-go-blue?logo=go">
-    <img src="https://img.shields.io/badge/logo-circleci-black?logo=circleci">
-    <img src="https://img.shields.io/badge/logo-git-orange?logo=git">
-    <img src="https://img.shields.io/badge/logo-markdown-skyblue?logo=markdown">
-</div>
+<div style="align-items: center; margin-top: 0px !important; margin-bottom: 14px;" align="center">
+    <p style="text-align: center;" align="center">
+        <img src="https://img.shields.io/badge/logo-go-blue?logo=go">
+        <img src="https://img.shields.io/badge/logo-circleci-black?logo=circleci">
+        <img src="https://img.shields.io/badge/logo-git-orange?logo=git">
+        <img src="https://img.shields.io/badge/logo-markdown-skyblue?logo=markdown">
+    </p>
 </div>
 
 ## About
