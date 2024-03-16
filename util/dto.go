@@ -1,6 +1,8 @@
 package util
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+)
 
 type Configs struct {
 	DarajaEnvironment       string `mapstructure:"DARAJA_ENVIRONMENT"`
@@ -32,3 +34,5 @@ func LoadConfigs(path string) (envs *Configs, err error) {
 	}
 	return
 }
+
+var Envs *Configs
