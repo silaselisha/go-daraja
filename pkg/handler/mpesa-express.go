@@ -13,7 +13,7 @@ import (
 )
 
 func (cl *Client) MpesaExpress(description, phoneNumber string, amount float64) ([]byte, error) {
-	result := []byte(fmt.Sprintf("%s%s%s", util.Envs.DarajaBusinessShortCode, util.Envs.DarajaPassKey, util.Envs.DarajaTimestamp))
+	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, cl.configs.DarajaTimestamp))
 	password := base64.URLEncoding.EncodeToString(result)
 
 	mobileNumber, err := util.PhoneNumberFormatter(phoneNumber)
@@ -23,20 +23,20 @@ func (cl *Client) MpesaExpress(description, phoneNumber string, amount float64) 
 	}
 
 	payload := ExpressReqParams{
-		BusinessShortCode: util.Envs.DarajaBusinessShortCode,
+		BusinessShortCode: cl.configs.DarajaBusinessShortCode,
 		Password:          password,
-		Timestamp:         util.Envs.DarajaTimestamp,
-		TransactionType:   util.Envs.DarajaTransactionType,
+		Timestamp:         cl.configs.DarajaTimestamp,
+		TransactionType:   cl.configs.DarajaTransactionType,
 		Amount:            amount,
 		PartyA:            mobileNumber,
-		PartyB:            util.Envs.DarajaPartyB,
+		PartyB:            cl.configs.DarajaPartyB,
 		PhoneNumber:       mobileNumber,
-		CallBackURL:       util.Envs.DarajaCallBackURL,
-		AccountReference:  util.Envs.DarajaAccountRef,
+		CallBackURL:       cl.configs.DarajaCallBackURL,
+		AccountReference:  cl.configs.DarajaAccountRef,
 		TransactionDesc:   description,
 	}
 
-	baseURL := util.BaseUrlBuilder(util.Envs.DarajaEnvironment)
+	baseURL := util.BaseUrlBuilder(cl.configs.DarajaEnvironment)
 	URL := fmt.Sprintf("%s/%s", baseURL, "mpesa/stkpush/v1/processrequest")
 
 	reqData, err := json.Marshal(payload)
