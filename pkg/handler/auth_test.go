@@ -2,24 +2,10 @@ package handler
 
 import (
 	"fmt"
-	"log"
-	"os"
 	"testing"
 
-	"github.com/silaselisha/go-daraja/util"
 	"github.com/stretchr/testify/require"
 )
-
-
-func TestMain(m *testing.M) {
-	envs, err := util.LoadConfigs("./../..")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	util.Envs = envs
-	os.Exit(m.Run())
-}
 
 func TestAuth(t *testing.T) {
 	testCases := []struct {
