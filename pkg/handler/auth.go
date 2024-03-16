@@ -5,31 +5,30 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 
 	"github.com/silaselisha/go-daraja/util"
 )
 
-const (
-	URL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-)
-
-func NewDarajaAuth(authToken string) (DarajaAuth, error) {
+func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 	client := &http.Client{}
-	envs, err := util.LoadConfigs("./../..")
+	envs, err := util.LoadConfigs(os.Getenv(".env"))
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println("envs " + envs.DarajaEnvironment)
 	url := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
+	authToken := util.GenAuthorizationToken(consumerKey, consumerSecret)
+	
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Basic "+authToken)
+	req.Header.Set("Authorization", "Basic " + authToken)
 	res, err := client.Do(req)
+
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +43,9 @@ func NewDarajaAuth(authToken string) (DarajaAuth, error) {
 		return nil, err
 	}
 
-	var result *Client
-	json.Unmarshal(body, &result)
-	return result, nil
+	var darajaAuth *Client = &Client{
+		config: envs,
+	}
+	json.Unmarshal(body, &darajaAuth)
+	return darajaAuth, nil
 }
