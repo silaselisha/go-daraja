@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -13,6 +14,7 @@ import (
 var testEnvs *util.Configs
 
 func TestMain(m *testing.M) {
+	fmt.Println(os.Getenv(".env"))
 	envs, err := util.LoadConfigs(os.Getenv(".env"))
 	if err != nil {
 		log.Fatal(err)
