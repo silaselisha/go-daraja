@@ -5,28 +5,23 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 
 	"github.com/silaselisha/go-daraja/util"
 )
 
 func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 	client := &http.Client{}
-	envs, err := util.LoadConfigs(os.Getenv(".env"))
-	if err != nil {
-		return nil, err
-	}
 
-	url := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(envs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
+	url := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(util.Envs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	authToken := util.GenAuthorizationToken(consumerKey, consumerSecret)
-	
+
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Basic " + authToken)
+	req.Header.Set("Authorization", "Basic "+authToken)
 	res, err := client.Do(req)
 
 	if err != nil {
@@ -43,9 +38,7 @@ func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 		return nil, err
 	}
 
-	var darajaAuth *Client = &Client{
-		config: envs,
-	}
+	var darajaAuth *Client
 	json.Unmarshal(body, &darajaAuth)
 	return darajaAuth, nil
 }
