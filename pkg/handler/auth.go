@@ -44,7 +44,9 @@ func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 		return nil, err
 	}
 
-	var darajaAuth *Client
+	var darajaAuth *Client = &Client{
+		configs: configs,
+	}
 	json.Unmarshal(body, &darajaAuth)
 	return darajaAuth, nil
 }
