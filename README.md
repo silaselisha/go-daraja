@@ -1,13 +1,38 @@
 <div align="center" style="margin-bottom: 0px!important; padding: 0px;">
     <img src="./public/images/godarajamascott.png" alt="godaraja logo" height="150px"/>
-    <h1 style="font-size: 40px; font-weight: 800; padding: 0px;">Go-Daraja</h1>
+    <h3 style="font-size: 40px; font-weight: 800; padding: 0px;">Go-daraja</h1>
 </div>
 
-<p style="text-align: center;">
+<div style="text-align: center; margin-top: 0px !important; margin-bottom: 14px;" align="center">
     <img src="https://img.shields.io/badge/logo-go-blue?logo=go">
     <img src="https://img.shields.io/badge/logo-circleci-black?logo=circleci">
     <img src="https://img.shields.io/badge/logo-git-orange?logo=git">
     <img src="https://img.shields.io/badge/logo-markdown-skyblue?logo=markdown">
-</p>
+</div>
 
-Go-Daraja Mpesa API Client is a Golang package designed to simplify interaction with the [daraja api]("https://developer.safaricom.co.ke/"). This package provides developers with a convenient and efficient way to integrate Mpesa payments and transactions into their Go applications.
+## About
+
+Go-daraja is an open-source project facilitating seamless integration of Safaricom's Daraja API into Golang applications, providing developers with a straightforward interface. It simplifies API interaction, allowing developers to focus on core application logic while encouraging community collaboration for ongoing improvement.
+
+### Learning Resources
+
+* daraja API [official docs]("https://developer.safaricom.co.ke")
+* golang [official docs]("https://go.dev/doc")
+* circleci [official docs]("https://circleci.com/docs/getting-started")
+
+## To start using go-daraja
+
+1. Ensure that go is installed. In a situation where go is not installed click > [install go](https://go.dev/doc/install)
+2. Create a new go project
+
+    ``` cmd
+        mkdir duka-letu
+        cd dula-letu
+        go mod init github.com/user-github-name/project-name
+    ```
+
+3. Install go-daraja package
+
+    ```go
+       go get github.com/silaselisha/godaraja
+    ```
