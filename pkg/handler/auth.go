@@ -9,10 +9,6 @@ import (
 	"github.com/silaselisha/go-daraja/util"
 )
 
-const (
-	URL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-)
-
 func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 	client := &http.Client{}
 	envs, err := util.LoadConfigs("./../..")
