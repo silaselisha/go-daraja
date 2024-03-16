@@ -12,7 +12,13 @@ import (
 func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 	client := &http.Client{}
 
-	url := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(util.Envs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
+	configs, err := util.LoadConfigs(".")
+	if err != nil {
+		fmt.Print(err)
+		return nil, err
+	}
+
+	url := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(configs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
