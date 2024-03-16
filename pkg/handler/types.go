@@ -1,13 +1,10 @@
 package handler
 
-import "github.com/silaselisha/go-daraja/util"
-
 type DarajaAuth interface {
 	MpesaExpress(description, phoneNumber string, amount float64) ([]byte, error)
 }
 
 type Client struct {
-	config *util.Configs
 	AccessToken  string `json:"access_token,omitempty"`
 	ExpiresIn    string `json:"expires_in,omitempty"`
 	RequestID    string `json:"requestId,omitempty"`
