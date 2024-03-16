@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 
 	"github.com/silaselisha/go-daraja/util"
 )
 
 func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 	client := &http.Client{}
-	envs, err := util.LoadConfigs("./../..")
+	envs, err := util.LoadConfigs(os.Getenv(".env"))
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +43,9 @@ func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 		return nil, err
 	}
 
-	var darajaAuth *Client
+	var darajaAuth *Client = &Client{
+		config: envs,
+	}
 	json.Unmarshal(body, &darajaAuth)
 	return darajaAuth, nil
 }
