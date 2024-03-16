@@ -16,11 +16,9 @@
 
 Go-daraja is an open-source project facilitating seamless integration of Safaricom's Daraja API into Golang applications, providing developers with a straightforward interface. It simplifies API interaction, allowing developers to focus on core application logic while encouraging community collaboration for ongoing improvement.
 
-### Learning Resources
-
-* daraja API [official docs]("https://developer.safaricom.co.ke")
-* golang [official docs]("https://go.dev/doc")
-* circleci [official docs]("https://circleci.com/docs/getting-started")
+1. daraja API > [official docs]("https://developer.safaricom.co.ke")
+2. golang > [official docs]("https://go.dev/doc")
+3. circleci > [official docs]("https://circleci.com/docs/getting-started")
 
 ## To start using go-daraja
 
