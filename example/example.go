@@ -42,7 +42,7 @@ func dukaHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		darajaClient, err := handler.NewDarajaClient(".")
+		darajaClient, err := handler.NewDarajaClient("./..")
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
