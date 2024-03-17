@@ -2,12 +2,16 @@ package handler
 
 import "github.com/silaselisha/go-daraja/util"
 
-type DarajaAuth interface {
-	MpesaExpress(description, phoneNumber string, amount float64) ([]byte, error)
+type Daraja interface {
+	ClientAuth() (*DarajaAuth, error)
+	NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error)
 }
 
-type Client struct {
-	configs      *util.Configs
+type DarajaClientParams struct {
+	configs *util.Configs
+}
+
+type DarajaAuth struct {
 	AccessToken  string `json:"access_token,omitempty"`
 	ExpiresIn    string `json:"expires_in,omitempty"`
 	RequestID    string `json:"requestId,omitempty"`
@@ -15,7 +19,7 @@ type Client struct {
 	ErrorMessage string `json:"errorMessage,omitempty"`
 }
 
-type StkCallback struct {
+type NICallbackParams struct {
 	MerchantRequestID   string `json:"MerchantRequestID"`
 	CheckoutRequestID   string `json:"CheckoutRequestID"`
 	ResponseCode        string `json:"ResponseCode"`
@@ -23,17 +27,17 @@ type StkCallback struct {
 	CustomerMessage     string `json:"CustomerMessage"`
 }
 
-type DarajaError struct {
+type DarajaErrorParams struct {
 	RequestID    string `json:"requestId"`
 	ErrorCode    string `json:"errorCode"`
 	ErrorMessage string `json:"errorMessage"`
 }
 
 type CallbackMetadata struct {
-	Item []Item `json:"item,omitempty"`
+	Item []ItemParams `json:"item,omitempty"`
 }
 
-type Item struct {
+type ItemParams struct {
 	Name  string `json:"name,omitempty"`
 	Value string `json:"value,omitempty"`
 }

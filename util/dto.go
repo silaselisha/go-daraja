@@ -34,5 +34,3 @@ func LoadConfigs(path string) (envs *Configs, err error) {
 	}
 	return
 }
-
-var Envs *Configs
