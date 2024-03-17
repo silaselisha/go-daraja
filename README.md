@@ -1,6 +1,5 @@
 <div align="center" style="margin-bottom: 0px!important; padding: 0px;">
     <img src="./public/images/godarajamascott.png" alt="godaraja logo" height="100px"/>
-    <h1 style="font-size: 48px; font-weight: 800; padding: 0px;">Go-daraja</h1>
 </div>
 
 <div style="align-items: center; margin-top: 0px !important; margin-bottom: 14px;" align="center">
@@ -10,6 +9,7 @@
         <img src="https://img.shields.io/badge/logo-git-orange?logo=git">
         <img src="https://img.shields.io/badge/logo-markdown-skyblue?logo=markdown">
     </p>
+    <h1 style="font-size: 48px; font-weight: 800; padding: 0px;">Go-daraja</h1>
 </div>
 
 ## About
