@@ -9,12 +9,21 @@ import (
 	"github.com/silaselisha/go-daraja/util"
 )
 
-func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
+func NewDarajaClient(path string) (Daraja, error) {
+	configs, err := util.LoadConfigs(path)
+	if err != nil {
+		return nil, err
+	}
+	return &DarajaClientParams{
+		configs: configs,
+	}, nil
+}
+
+func (cl *DarajaClientParams) ClientAuth() (*DarajaAuth, error) {
 	client := &http.Client{}
 
-	configs, err := util.LoadConfigs(".")
+	configs, err := util.LoadConfigs("./../..")
 	if err != nil {
-		fmt.Print(err)
 		return nil, err
 	}
 
@@ -24,7 +33,7 @@ func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 		return nil, err
 	}
 
-	authToken := util.GenAuthorizationToken(consumerKey, consumerSecret)
+	authToken := util.GenAuthorizationToken(cl.configs.DarajaConsumerKey, cl.configs.DarajaConsumerSecret)
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Basic "+authToken)
@@ -38,15 +47,12 @@ func NewDarajaAuth(consumerKey, consumerSecret string) (DarajaAuth, error) {
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		if err == io.EOF {
-			fmt.Print("EOF error")
 			return nil, err
 		}
 		return nil, err
 	}
 
-	var darajaAuth *Client = &Client{
-		configs: configs,
-	}
+	var darajaAuth *DarajaAuth
 	json.Unmarshal(body, &darajaAuth)
 	return darajaAuth, nil
 }
