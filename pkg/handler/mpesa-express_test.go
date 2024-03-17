@@ -22,11 +22,9 @@ func TestMpesaExpress(t *testing.T) {
 			phoneNumber:    "0708374148",
 			description:    "test payment",
 			amount:         1,
-			consumerKey:    "JDG40OnpvvRgXhgoPZ9GhGCTm1WZ42geJ66pH1tHIwwo4MrR",
-			consumerSecret: "yQcMx6pBUMVjZ90ILmA3QGJzf0m0l2gwhY45l9S3EzcLkH8xOPdqIaE7DQiX5xyO",
 			check: func(t *testing.T, data []byte, err error) {
 
-				var payload StkCallback
+				var payload NICallbackParams
 				require.NoError(t, err)
 				err = json.Unmarshal(data, &payload)
 				require.NoError(t, err)
@@ -40,8 +38,6 @@ func TestMpesaExpress(t *testing.T) {
 			phoneNumber:    "070837414",
 			description:    "test payment",
 			amount:         1,
-			consumerKey:    "JDG40OnpvvRgXhgoPZ9GhGCTm1WZ42geJ66pH1tHIwwo4MrR",
-			consumerSecret: "yQcMx6pBUMVjZ90ILmA3QGJzf0m0l2gwhY45l9S3EzcLkH8xOPdqIaE7DQiX5xyO",
 			check: func(t *testing.T, data []byte, err error) {
 
 				require.Error(t, err)
@@ -51,10 +47,15 @@ func TestMpesaExpress(t *testing.T) {
 
 	for _, test := range testCases {
 		t.Run(test.name, func(t *testing.T) {
-			auth, err := NewDarajaAuth(test.consumerKey, test.consumerSecret)
+			client, err := NewDarajaClient("./../..")
 			require.NoError(t, err)
+			require.NotEmpty(t, client)
 
-			payload, err := auth.MpesaExpress(test.description, test.phoneNumber, test.amount)
+			auth, err := client.ClientAuth()
+			require.NoError(t, err)
+			require.NotEmpty(t, auth)
+
+			payload, err := client.NIPush(test.description, test.phoneNumber, test.amount, auth.AccessToken)
 			test.check(t, payload, err)
 		})
 	}
