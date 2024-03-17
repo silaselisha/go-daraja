@@ -38,8 +38,6 @@ func TestAuth(t *testing.T) {
 			require.NotEmpty(t, client)
 
 			auth, err := client.ClientAuth()
-			require.NotEmpty(t, auth)
-			require.NoError(t, err)
 			test.check(t, auth, err)
 		})
 	}
