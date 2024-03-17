@@ -29,7 +29,6 @@ func BaseUrlBuilder(environment string) string {
 	default:
 		baseURL = "https://sandbox.safaricom.co.ke"
 	}
-
 	return baseURL
 }
 

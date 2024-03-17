@@ -7,6 +7,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestNewClient(t *testing.T) {
+	configs, err := NewDarajaClient(".")
+	require.Error(t, err)
+	require.Empty(t, configs)
+}
+
 func TestAuth(t *testing.T) {
 	testCases := []struct {
 		name           string
@@ -16,11 +22,9 @@ func TestAuth(t *testing.T) {
 	}{
 		{
 			name:           "200 OK Auth Request",
-			consumerKey:    "JDG40OnpvvRgXhgoPZ9GhGCTm1WZ42geJ66pH1tHIwwo4MrR",
-			consumerSecret: "yQcMx6pBUMVjZ90ILmA3QGJzf0m0l2gwhY45l9S3EzcLkH8xOPdqIaE7DQiX5xyO",
 			check: func(t *testing.T, response any, err error) {
 				fmt.Print(response)
-				res := response.(DarajaAuth).(*Client)
+				res := response.(*DarajaAuth)
 				require.NotEmpty(t, res)
 				require.NoError(t, err)
 			},
@@ -29,7 +33,13 @@ func TestAuth(t *testing.T) {
 
 	for _, test := range testCases {
 		t.Run(test.name, func(t *testing.T) {
-			auth, err := NewDarajaAuth(test.consumerKey, test.consumerSecret)
+			client, err := NewDarajaClient("./../..")
+			require.NoError(t, err)
+			require.NotEmpty(t, client)
+
+			auth, err := client.ClientAuth()
+			require.NotEmpty(t, auth)
+			require.NoError(t, err)
 			test.check(t, auth, err)
 		})
 	}
