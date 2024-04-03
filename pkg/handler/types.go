@@ -5,6 +5,7 @@ import "github.com/silaselisha/go-daraja/util"
 type Daraja interface {
 	ClientAuth() (*DarajaAuth, error)
 	NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error)
+	BusinessToConsumer(amount float64, commandID, remarks, timeoutURL, resultURL, occassion string) ([]byte, error)
 }
 
 type DarajaClientParams struct {
@@ -55,3 +56,18 @@ type ExpressReqParams struct {
 	AccountReference  string
 	TransactionDesc   string
 }
+
+type B2CReqParams struct {
+	OriginatorConversationID string
+	InitiatorName            string
+	SecurityCredential       string
+	CommandID                string
+	Amount                   float64
+	PartyA                   string
+	PartyB                   string
+	Remarks                  string
+	QueueTimeOutURL          string
+	ResultURL                string
+	Occassion                string
+}
+

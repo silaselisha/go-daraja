@@ -12,9 +12,12 @@ type Configs struct {
 	DarajaPassKey           string `mapstructure:"DARAJA_PASS_KEY"`
 	DarajaTransactionType   string `mapstructure:"DARAJA_TRANSACTION_TYPE"`
 	DarajaCallBackURL       string `mapstructure:"DARAJA_CALL_BACK_URL"`
+	DarajaPartyA            string `mapstructure:"DARAJA_PARTY_A"`
 	DarajaPartyB            string `mapstructure:"DARAJA_PARTY_B"`
 	DarajaTimestamp         string `mapstructure:"DARAJA_TIMESTAMP"`
-	DarajaAccountRef        string `mapstructure:"DARAJA_ACCOUNT_REF"`
+	DarajaAccountRef        string `mapstructure:"DARAJA_ACCOUNT_REFRENCE"`
+	DarajaInitiatorName     string `mapstructure:"DARAJA_INITIATOR_NAME"`
+	DarajaInitiatorPassword string `mapstructure:"DARAJA_INITIATOR_PASSWORD"`
 }
 
 func LoadConfigs(path string) (envs *Configs, err error) {
