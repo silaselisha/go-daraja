@@ -18,7 +18,7 @@ Go-daraja is an open-source project facilitating seamless integration of Safaric
 
 ## Install and use go-daraja
 
-1. Ensure that go is installed. In a situation where go is not installed click > [install go](https://go.dev/doc/install)
+1. Ensure that go is installed. In a situation where go is not installed click **[install go](https://go.dev/doc/install)**
 2. Create a new go project
 
     ``` cmd

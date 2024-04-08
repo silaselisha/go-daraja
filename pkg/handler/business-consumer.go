@@ -17,7 +17,7 @@ const (
 	PromotionalPayment
 )
 
-func (cl *DarajaClientParams) BusinessToConsumer(amount float64, commandID, remarks, qeueuTimeOutURL, resultURL, occassion string) ([]byte, error) {
+func (cl *DarajaClientParams) BusinessToConsumer(amount float64, commandID, remarks, qeueuTimeOutURL, resultURL, authToken string) ([]byte, error) {
 	baseURL := util.BaseUrlBuilder(cl.configs.DarajaEnvironment)
 	URL := fmt.Sprintf("%s/%s", baseURL, "mpesa/b2c/v3/paymentrequest")
 	ID, err := uuid.NewRandom()
@@ -35,7 +35,6 @@ func (cl *DarajaClientParams) BusinessToConsumer(amount float64, commandID, rema
 		Remarks:                  remarks,
 		QueueTimeOutURL:          qeueuTimeOutURL,
 		ResultURL:                resultURL,
-		Occassion:                occassion,
 	}
 
 	buff, err := json.Marshal(payload)
@@ -47,6 +46,9 @@ func (cl *DarajaClientParams) BusinessToConsumer(amount float64, commandID, rema
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+authToken)
 
 	client := &http.Client{}
 	res, err := client.Do(req)

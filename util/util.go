@@ -1,10 +1,17 @@
 package util
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
 	"encoding/base64"
+	"encoding/pem"
 	"errors"
 	"fmt"
+	"os"
+	"path"
 	"regexp"
+	"time"
 )
 
 func GenAuthorizationToken(consumerKey, consumerSecret string) string {
@@ -41,4 +48,38 @@ func PhoneNumberFormatter(phoneNumber string) (string, error) {
 	}
 
 	return fmt.Sprintf("%s%s", "254", phoneNumber[1:]), nil
+}
+
+func GenTimestamp() string {
+	// YYYYMMDDHHmmss
+	timestamp := time.Now()
+	return fmt.Sprintf("%d%02d%02d%02d%02d%02d", timestamp.Year(), timestamp.Month(), timestamp.Day(), timestamp.Hour(), timestamp.Minute(), timestamp.Second())
+}
+
+func GenSecurityCred(password string, fileName string) (string, error) {
+	passwordBuff := []byte(password)
+	filePath := path.Join("./../pkg/cert/", fileName)
+
+	buff, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	// 1 define a cert block
+	certBlock, _ := pem.Decode(buff)
+	cert, err := x509.ParseCertificate(certBlock.Bytes)
+	if err != nil {
+		return "", err
+	}
+	// extract public key from the certificate
+	key := cert.PublicKey.(*rsa.PublicKey)
+
+	// encrypt password using RSA
+	cipherText, err := rsa.EncryptPKCS1v15(rand.Reader, key, passwordBuff)
+	if err != nil {
+		return "", err
+	}
+
+	securityCred := base64.StdEncoding.EncodeToString(cipherText)
+	return string(securityCred), nil
 }

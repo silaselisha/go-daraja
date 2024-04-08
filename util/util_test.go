@@ -16,6 +16,21 @@ func TestAuthGenUtil(t *testing.T) {
 	fmt.Print(token)
 }
 
+func TestGenTimestamp(t *testing.T) {
+	timestamp := GenTimestamp()
+	require.NotNil(t, timestamp)
+	require.Equal(t, 14, len(timestamp))
+}
+
+func TestGenSecurityCred(t *testing.T) {
+	password := "testapi"
+	fileName := "sandbox.cer"
+
+	cred, err := GenSecurityCred(password, fileName)
+	require.NoError(t, err)
+	fmt.Println(cred)
+}
+
 func TestLoadConfigs(t *testing.T) {
 	testCases := []struct {
 		name  string
