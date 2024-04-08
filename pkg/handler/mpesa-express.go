@@ -12,7 +12,8 @@ import (
 )
 
 func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error) {
-	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, cl.configs.DarajaTimestamp))
+	timestamp := util.GenTimestamp()
+	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, timestamp))
 	password := base64.URLEncoding.EncodeToString(result)
 
 	mobileNumber, err := util.PhoneNumberFormatter(phoneNumber)
@@ -23,7 +24,7 @@ func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amo
 	payload := ExpressReqParams{
 		BusinessShortCode: cl.configs.DarajaBusinessShortCode,
 		Password:          password,
-		Timestamp:         cl.configs.DarajaTimestamp,
+		Timestamp:         timestamp,
 		TransactionType:   cl.configs.DarajaTransactionType,
 		Amount:            amount,
 		PartyA:            mobileNumber,
@@ -61,6 +62,5 @@ func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amo
 	if err != nil {
 		return nil, err
 	}
-
 	return resData, nil
 }
