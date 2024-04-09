@@ -23,11 +23,9 @@ func TestGenTimestamp(t *testing.T) {
 }
 
 func TestGenSecurityCred(t *testing.T) {
-	password := "testapi"
-	fileName := "sandbox.cer"
-
-	cred, err := GenSecurityCred(password, fileName)
+	cred, err := GenSecurityCred(&Configs{DarajaEnvironment: "sandbox"}, "./../pkg")
 	require.NoError(t, err)
+	require.NotNil(t, cred)
 	fmt.Println(cred)
 }
 

@@ -56,11 +56,16 @@ func GenTimestamp() string {
 	return fmt.Sprintf("%d%02d%02d%02d%02d%02d", timestamp.Year(), timestamp.Month(), timestamp.Day(), timestamp.Hour(), timestamp.Minute(), timestamp.Second())
 }
 
-func GenSecurityCred(password string, fileName string) (string, error) {
-	passwordBuff := []byte(password)
-	filePath := path.Join("./../pkg/cert/", fileName)
+func GenSecurityCred(config *Configs, filePath string) (string, error) {
+	passwordBuff := []byte(config.DarajaInitiatorPassword)
+	fileName := "sandbox"
+	if config.DarajaEnvironment == "production" {
+		fileName = "production"
+	}
 
-	buff, err := os.ReadFile(filePath)
+	file := path.Join(filePath, "cert/", fileName+".cer")
+	fmt.Println(file)
+	buff, err := os.ReadFile(file)
 	if err != nil {
 		return "", err
 	}
