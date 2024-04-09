@@ -5,7 +5,7 @@ import "github.com/silaselisha/go-daraja/util"
 type Daraja interface {
 	ClientAuth() (*DarajaAuth, error)
 	NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error)
-	BusinessToConsumer(amount float64, commandID, remarks, timeoutURL, resultURL, authToken string) ([]byte, error)
+	BusinessToConsumer(amount, commandID, remarks, timeoutURL, resultURL, authToken string) ([]byte, error)
 }
 
 type DarajaClientParams struct {
@@ -26,6 +26,13 @@ type NICallbackParams struct {
 	ResponseCode        string `json:"ResponseCode"`
 	ResponseDescription string `json:"ResponseDescription"`
 	CustomerMessage     string `json:"CustomerMessage"`
+}
+
+type BusinessCustomerParams struct {
+	ConversationID           string `json:"ConversationID"`
+	OriginatorConversationID string `json:"OriginatorConversationID"`
+	ResponseCode             string `json:"ResponseCode"`
+	ResponseDescription      string `json:"ResponseDescription"`
 }
 
 type DarajaErrorParams struct {
@@ -62,7 +69,7 @@ type B2CReqParams struct {
 	InitiatorName            string
 	SecurityCredential       string
 	CommandID                string
-	Amount                   float64
+	Amount                   string
 	PartyA                   string
 	PartyB                   string
 	Remarks                  string
@@ -70,4 +77,3 @@ type B2CReqParams struct {
 	ResultURL                string
 	Occassion                string
 }
-
