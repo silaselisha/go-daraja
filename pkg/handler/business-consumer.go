@@ -17,7 +17,7 @@ const (
 	PromotionalPayment
 )
 
-func (cl *DarajaClientParams) BusinessToConsumer(amount, commandID, remarks, qeueuTimeOutURL, resultURL, authToken string) ([]byte, error) {
+func (cl *DarajaClientParams) BusinessToConsumer(amount, customerNo, txnType, remarks, qeueuTimeOutURL, resultURL, authToken string) ([]byte, error) {
 	baseURL := util.BaseUrlBuilder(cl.configs.DarajaEnvironment)
 	URL := fmt.Sprintf("%s/%s", baseURL, "mpesa/b2c/v3/paymentrequest")
 	ID, err := uuid.NewRandom()
@@ -29,13 +29,15 @@ func (cl *DarajaClientParams) BusinessToConsumer(amount, commandID, remarks, qeu
 	if err != nil {
 		return nil, err
 	}
+
+	//TODO: check the validity of the phone number
 	payload := B2CReqParams{
 		OriginatorConversationID: ID.String(),
 		InitiatorName:            cl.configs.DarajaInitiatorName,
 		Amount:                   amount,
-		CommandID:                commandID,
+		CommandID:                txnType,
 		PartyA:                   cl.configs.DarajaPartyA,
-		PartyB:                   cl.configs.DarajaPartyB,
+		PartyB:                   customerNo, //254728762287
 		Remarks:                  remarks,
 		QueueTimeOutURL:          qeueuTimeOutURL,
 		ResultURL:                resultURL,

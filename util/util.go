@@ -64,7 +64,7 @@ func GenSecurityCred(config *Configs, filePath string) (string, error) {
 	}
 
 	file := path.Join(filePath, "cert/", fileName+".cer")
-	fmt.Println(file)
+
 	buff, err := os.ReadFile(file)
 	if err != nil {
 		return "", err
