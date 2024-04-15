@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        uses: c-py/action-dotenv-to-setenv@v2
       - name: setting Go environment
         uses: actions/setup-go@v3
         with:
