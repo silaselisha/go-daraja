@@ -8,12 +8,6 @@ jobs:
   go-daraja-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: setting Go environment
-        uses: actions/setup-go@v3
-        with:
-          go-version: "1.22.x"
-
       - name: create test envs  
         run: | 
           echo "DARAJA_ENVIRONMENT=${{secrets.DARAJA_ENVIRONMENT}}" >> .env
@@ -29,6 +23,19 @@ jobs:
           echo "DARAJA_INITIATOR_NAME=${{secrets.DARAJA_INITIATOR_NAME}}" >> .env
           echo "DARAJA_INITIATOR_PASSWORD=${{secrets.DARAJA_INITIATOR_PASSWORD}}" >> .env
 
-          echo ls -al
+      - name: Check .env file
+        run: |
+          if [ -f .env ]; then
+            echo ".env file exists."
+          else
+            echo ".env file does not exist."
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - name: setting Go environment
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.22.x"
+
       - name: run test
         run: ./run.sh
