@@ -25,7 +25,7 @@ func (cl *DarajaClientParams) BusinessToConsumer(amount, customerNo, txnType, re
 		return nil, err
 	}
 
-	securityCred, err := util.GenSecurityCred(cl.configs, "./../..")
+	securityCred, err := util.GenSecurityCred(cl.configs, "./../../")
 	if err != nil {
 		return nil, err
 	}
