@@ -62,13 +62,7 @@ func (cl *DarajaClientParams) BusinessToConsumer(amount, customerNo, txnType, re
 	if err != nil {
 		return nil, err
 	}
+	
 	defer res.Body.Close()
-
-	buff, err = io.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Print(string(buff))
-	return buff, nil
+	return io.ReadAll(res.Body)
 }

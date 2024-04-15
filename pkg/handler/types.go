@@ -4,12 +4,23 @@ import "github.com/silaselisha/go-daraja/util"
 
 type Daraja interface {
 	ClientAuth() (*DarajaAuth, error)
-	NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error)
+	NIPush(description string, phoneNumber string, amount float64, authToken,transactionType string) ([]byte, error)
 	BusinessToConsumer(amount, customerNo, txnType, remarks, timeoutURL, resultURL, authToken string) ([]byte, error)
+	CustomerToBusiness(authToken, confirmationURL, validationURL, responseType string) ([]byte, error)
 }
 
 type DarajaClientParams struct {
 	configs *util.Configs
+}
+
+func NewDarajaClient(path string) (Daraja, error) {
+	configs, err := util.LoadConfigs(path)
+	if err != nil {
+		return nil, err
+	}
+	return &DarajaClientParams{
+		configs: configs,
+	}, nil
 }
 
 type DarajaAuth struct {
@@ -76,4 +87,11 @@ type B2CReqParams struct {
 	QueueTimeOutURL          string
 	ResultURL                string
 	Occassion                string
+}
+
+type C2BReqParams struct {
+	ShortCode       string
+	ResponseType    string
+	ConfirmationURL string
+	ValidationURL   string
 }

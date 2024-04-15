@@ -32,14 +32,14 @@ func TestAuth(t *testing.T) {
 		},
 	}
 
-	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
 			client, err := handler.NewDarajaClient("./../../..")
 			require.NoError(t, err)
 			require.NotEmpty(t, client)
 
 			auth, err := client.ClientAuth()
-			test.check(t, auth, err)
+			tc.check(t, auth, err)
 		})
 	}
 }
