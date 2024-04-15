@@ -11,7 +11,7 @@ import (
 	"github.com/silaselisha/go-daraja/util"
 )
 
-func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amount float64, authToken, transactionType string) ([]byte, error) {
+func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error) {
 	timestamp := util.GenTimestamp()
 	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, timestamp))
 	password := base64.URLEncoding.EncodeToString(result)
@@ -25,10 +25,10 @@ func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amo
 		BusinessShortCode: cl.configs.DarajaBusinessShortCode,
 		Password:          password,
 		Timestamp:         timestamp,
-		TransactionType:   transactionType,
+		TransactionType:   cl.configs.DarajaTransactionType,
 		Amount:            amount,
 		PartyA:            mobileNumber,
-		PartyB:            cl.configs.DarajaPartyB,
+		PartyB:            cl.configs.DarajaBusinessShortCode,
 		PhoneNumber:       mobileNumber,
 		CallBackURL:       cl.configs.DarajaCallBackURL,
 		AccountReference:  cl.configs.DarajaAccountRef,
