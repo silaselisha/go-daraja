@@ -20,7 +20,7 @@ func TestBusinessConsumer(t *testing.T) {
 		check        func(t *testing.T, buff []byte, err error)
 	}{
 		{
-			name:         "valid business consumer tx",
+			name:         "valid business consumer txn",
 			amount:       "10",
 			txnType:      "BusinessPayment",
 			remarks:      "Business Payment Remarks",
@@ -34,8 +34,8 @@ func TestBusinessConsumer(t *testing.T) {
 				var payload handler.BusinessCustomerParams
 				err = json.Unmarshal(buff, &payload)
 				require.NoError(t, err)
-				require.Equal(t, payload.ResponseCode, "0")
-				require.Equal(t, payload.ResponseDescription, "Accept the service request successfully.")
+				require.Equal(t, "0", payload.ResponseCode)
+				require.Equal(t, "Accept the service request successfully.", payload.ResponseDescription)
 			},
 		},
 		{

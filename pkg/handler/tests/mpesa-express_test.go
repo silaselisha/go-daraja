@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/silaselisha/go-daraja/pkg/handler"
@@ -12,19 +11,21 @@ import (
 
 func TestMpesaExpress(t *testing.T) {
 	testCases := []struct {
-		name           string
-		phoneNumber    string
-		description    string
-		amount         float64
-		consumerKey    string
-		consumerSecret string
-		check          func(t *testing.T, data []byte, err error)
+		name            string
+		phoneNumber     string
+		description     string
+		transactionType string
+		amount          float64
+		consumerKey     string
+		consumerSecret  string
+		check           func(t *testing.T, data []byte, err error)
 	}{
 		{
-			name:        "valid transaction",
-			phoneNumber: "0708374148",
-			description: "test payment",
-			amount:      1,
+			name:            "valid transaction",
+			phoneNumber:     "0708374149",
+			description:     "test payment",
+			transactionType: "CustomerPayBillOnline",
+			amount:          1,
 			check: func(t *testing.T, data []byte, err error) {
 				var payload handler.NICallbackParams
 				require.NoError(t, err)
@@ -39,20 +40,19 @@ func TestMpesaExpress(t *testing.T) {
 		},
 	}
 
-	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
 			client, err := handler.NewDarajaClient("./../../..")
 			require.NoError(t, err)
 			require.NotEmpty(t, client)
 
 			auth, err := client.ClientAuth()
-			log.Printf("auth token:%+v\n", auth.AccessToken)
-			require.NoError(t, err)
 			require.NotEmpty(t, auth)
+			require.NoError(t, err)
 
-			payload, err := client.NIPush(test.description, test.phoneNumber, test.amount, auth.AccessToken)
+			payload, err := client.NIPush(tc.description, tc.phoneNumber, tc.amount, auth.AccessToken, tc.transactionType)
 			fmt.Print(string(payload))
-			test.check(t, payload, err)
+			tc.check(t, payload, err)
 		})
 	}
 }

@@ -9,16 +9,6 @@ import (
 	"github.com/silaselisha/go-daraja/util"
 )
 
-func NewDarajaClient(path string) (Daraja, error) {
-	configs, err := util.LoadConfigs(path)
-	if err != nil {
-		return nil, err
-	}
-	return &DarajaClientParams{
-		configs: configs,
-	}, nil
-}
-
 func (cl *DarajaClientParams) ClientAuth() (*DarajaAuth, error) {
 	client := &http.Client{}
 
@@ -48,6 +38,8 @@ func (cl *DarajaClientParams) ClientAuth() (*DarajaAuth, error) {
 	}
 
 	var darajaAuth *DarajaAuth
-	json.Unmarshal(body, &darajaAuth)
+	if err := json.Unmarshal(body, &darajaAuth); err != nil {
+		return nil, err
+	}
 	return darajaAuth, nil
 }
