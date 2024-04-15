@@ -28,5 +28,7 @@ jobs:
           echo "DARAJA_ACCOUNT_REF=${{secrets.DARAJA_ACCOUNT_REF}}" >> .env
           echo "DARAJA_INITIATOR_NAME=${{secrets.DARAJA_INITIATOR_NAME}}" >> .env
           echo "DARAJA_INITIATOR_PASSWORD=${{secrets.DARAJA_INITIATOR_PASSWORD}}" >> .env
+
+          echo ls -al
       - name: run test
         run: ./run.sh
