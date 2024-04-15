@@ -1,6 +1,9 @@
 name: go-daraja tests coverage
 on:
-  [push]
+  push:
+    branches:
+      - master
+      - develop
 jobs:
   go-daraja test:
     runs-on: ubuntu-latest
