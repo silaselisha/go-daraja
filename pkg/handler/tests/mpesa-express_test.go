@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/silaselisha/go-daraja/pkg/handler"
@@ -21,11 +20,10 @@ func TestMpesaExpress(t *testing.T) {
 		check           func(t *testing.T, data []byte, err error)
 	}{
 		{
-			name:            "valid transaction",
-			phoneNumber:     "0708374149",
-			description:     "test payment",
-			transactionType: "CustomerPayBillOnline",
-			amount:          1,
+			name:        "valid transaction",
+			phoneNumber: "0708374149",
+			description: "test payment",
+			amount:      1,
 			check: func(t *testing.T, data []byte, err error) {
 				var payload handler.NICallbackParams
 				require.NoError(t, err)
@@ -50,8 +48,7 @@ func TestMpesaExpress(t *testing.T) {
 			require.NotEmpty(t, auth)
 			require.NoError(t, err)
 
-			payload, err := client.NIPush(tc.description, tc.phoneNumber, tc.amount, auth.AccessToken, tc.transactionType)
-			fmt.Print(string(payload))
+			payload, err := client.NIPush(tc.description, tc.phoneNumber, tc.amount, auth.AccessToken)
 			tc.check(t, payload, err)
 		})
 	}

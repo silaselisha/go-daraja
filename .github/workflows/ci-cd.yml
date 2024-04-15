@@ -1,0 +1,32 @@
+name: go-daraja tests coverage
+on:
+  push:
+    branches: 
+      - "develop"
+jobs:
+  go-daraja test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        uses: c-py/action-dotenv-to-setenv@v2
+      - name: setting Go environment
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.22.x"
+
+      - name: create test envs  
+        run: | 
+          echo "DARAJA_ENVIRONMENT=${{secrets.DARAJA_ENVIRONMENT}}" >> .env
+          echo "DARAJA_CONSUMER_KEY=${{secrets.DARAJA_CONSUMER_KEY}}" >> .env
+          echo "DARAJA_CONSUMER_SECRET=${{secrets.DARAJA_CONSUMER_SECRET}}" >> .env
+          echo "DARAJA_BUSINESS_SHORT_CODE=${{secrets.DARAJA_BUSINESS_SHORT_CODE}}" >> .env
+          echo "DARAJA_PASS_KEY=${{secrets.DARAJA_PASS_KEY}}" >> .env
+          echo "DARAJA_TRANSACTION_TYPE=${{secrets.DARAJA_TRANSACTION_TYPE}}" >> .env
+          echo "DARAJA_CALL_BACK_URL=${{secrets.DARAJA_CALL_BACK_URL}}" >> .env
+          echo "DARAJA_PARTY_A=${{secrets.DARAJA_PARTY-A}}" >> .env
+          echo "DARAJA_PARTY_B=${{secrets.DARAJA_PARTY_B}}" >> .env
+          echo "DARAJA_ACCOUNT_REF=${{secrets.DARAJA_ACCOUNT_REF}}" >> .env
+          echo "DARAJA_INITIATOR_NAME=${{secrets.DARAJA_INITIATOR_NAME}}" >> .env
+          echo "DARAJA_INITIATOR_PASSWORD=${{secrets.DARAJA_INITIATOR_PASSWORD}}" >> .env
+      - name: run test
+        run: ./run.sh

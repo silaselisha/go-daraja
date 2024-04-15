@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/silaselisha/go-daraja/pkg/handler"
@@ -40,7 +39,6 @@ func TestBusinessBuyGoods(t *testing.T) {
 				require.NotEmpty(t, buff)
 				require.NoError(t, err)
 
-				fmt.Println(string(buff))
 				var payload handler.BusinessCustomerParams
 				err = json.Unmarshal(buff, &payload)
 				require.NoError(t, err)

@@ -4,7 +4,7 @@ import "github.com/silaselisha/go-daraja/util"
 
 type Daraja interface {
 	ClientAuth() (*DarajaAuth, error)
-	NIPush(description string, phoneNumber string, amount float64, authToken,transactionType string) ([]byte, error)
+	NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error)
 	BusinessToConsumer(amount, customerNo, txnType, remarks, timeoutURL, resultURL, authToken string) ([]byte, error)
 	CustomerToBusiness(authToken, confirmationURL, validationURL, responseType string) ([]byte, error)
 	BusinessBuyGoods(amount float64, authToken, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string)([]byte, error)

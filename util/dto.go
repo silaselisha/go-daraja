@@ -14,7 +14,7 @@ type Configs struct {
 	DarajaCallBackURL       string `mapstructure:"DARAJA_CALL_BACK_URL"`
 	DarajaPartyA            string `mapstructure:"DARAJA_PARTY_A"`
 	DarajaPartyB            string `mapstructure:"DARAJA_PARTY_B"`
-	DarajaAccountRef        string `mapstructure:"DARAJA_ACCOUNT_REFRENCE"`
+	DarajaAccountRef        string `mapstructure:"DARAJA_ACCOUNT_REF"`
 	DarajaInitiatorName     string `mapstructure:"DARAJA_INITIATOR_NAME"`
 	DarajaInitiatorPassword string `mapstructure:"DARAJA_INITIATOR_PASSWORD"`
 }
