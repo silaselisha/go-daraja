@@ -16,6 +16,19 @@ func TestAuthGenUtil(t *testing.T) {
 	fmt.Print(token)
 }
 
+func TestGenTimestamp(t *testing.T) {
+	timestamp := GenTimestamp()
+	require.NotNil(t, timestamp)
+	require.Equal(t, 14, len(timestamp))
+}
+
+func TestGenSecurityCred(t *testing.T) {
+	cred, err := GenSecurityCred(&Configs{DarajaEnvironment: "sandbox"}, "./../pkg")
+	require.NoError(t, err)
+	require.NotNil(t, cred)
+	fmt.Println(cred)
+}
+
 func TestLoadConfigs(t *testing.T) {
 	testCases := []struct {
 		name  string
