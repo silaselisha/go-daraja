@@ -43,7 +43,7 @@ func TestBusinessConsumer(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := handler.NewDarajaClient("./../../..")
+			client, err := handler.NewDarajaClient("./../../../example")
 			require.NoError(t, err)
 
 			auth, err := client.ClientAuth()

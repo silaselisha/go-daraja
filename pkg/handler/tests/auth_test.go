@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
-	configs, err := handler.NewDarajaClient("./../../..")
+	configs, err := handler.NewDarajaClient("./../../../example")
 	require.NoError(t, err)
 	require.NotEmpty(t, configs)
 }
@@ -34,7 +34,7 @@ func TestAuth(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := handler.NewDarajaClient("./../../..")
+			client, err := handler.NewDarajaClient("./../../../example")
 			require.NoError(t, err)
 			require.NotEmpty(t, client)
 
