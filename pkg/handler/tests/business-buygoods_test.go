@@ -39,7 +39,7 @@ func TestBusinessBuyGoods(t *testing.T) {
 				require.NotEmpty(t, buff)
 				require.NoError(t, err)
 
-				var payload handler.BusinessCustomerParams
+				var payload handler.BusinessResParams
 				err = json.Unmarshal(buff, &payload)
 				require.NoError(t, err)
 				require.Equal(t, "0", payload.ResponseCode)

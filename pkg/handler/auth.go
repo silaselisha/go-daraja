@@ -9,11 +9,20 @@ import (
 	"github.com/silaselisha/go-daraja/util"
 )
 
+type DarajaAuth struct {
+	AccessToken  string `json:"access_token,omitempty"`
+	ExpiresIn    string `json:"expires_in,omitempty"`
+	RequestID    string `json:"requestId,omitempty"`
+	ErrorCode    string `json:"errorCode,omitempty"`
+	ErrorMessage string `json:"errorMessage,omitempty"`
+}
+
 func (cl *DarajaClientParams) ClientAuth() (*DarajaAuth, error) {
 	client := &http.Client{}
 
-	url := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
+
+	req, err := http.NewRequest(http.MethodGet, URL, nil)
 	if err != nil {
 		return nil, err
 	}

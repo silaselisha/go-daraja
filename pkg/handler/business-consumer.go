@@ -1,10 +1,7 @@
 package handler
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -17,9 +14,22 @@ const (
 	PromotionalPayment
 )
 
+type B2CReqParams struct {
+	OriginatorConversationID string
+	InitiatorName            string
+	SecurityCredential       string
+	CommandID                string
+	Amount                   string
+	PartyA                   string
+	PartyB                   string
+	Remarks                  string
+	QueueTimeOutURL          string
+	ResultURL                string
+	Occassion                string
+}
+
 func (cl *DarajaClientParams) BusinessToConsumer(amount, customerNo, txnType, remarks, qeueuTimeOutURL, resultURL, authToken string) ([]byte, error) {
-	baseURL := util.BaseUrlBuilder(cl.configs.DarajaEnvironment)
-	URL := fmt.Sprintf("%s/%s", baseURL, "mpesa/b2c/v3/paymentrequest")
+	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2c/v3/paymentrequest")
 	ID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
@@ -34,39 +44,19 @@ func (cl *DarajaClientParams) BusinessToConsumer(amount, customerNo, txnType, re
 	if err != nil {
 		return nil, err
 	}
-	//TODO: check the validity of the phone number
+
 	payload := B2CReqParams{
 		OriginatorConversationID: ID.String(),
 		InitiatorName:            cl.configs.DarajaInitiatorName,
 		Amount:                   amount,
 		CommandID:                txnType,
 		PartyA:                   cl.configs.DarajaBusinessConsumerPartyA,
-		PartyB:                   mobileNumber, //254728762287
+		PartyB:                   mobileNumber,
 		Remarks:                  remarks,
 		QueueTimeOutURL:          qeueuTimeOutURL,
 		ResultURL:                resultURL,
 		SecurityCredential:       securityCred,
 	}
 
-	buff, err := json.Marshal(payload)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest(http.MethodPost, URL, bytes.NewBuffer(buff))
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+authToken)
-
-	client := &http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	
-	defer res.Body.Close()
-	return io.ReadAll(res.Body)
+	return handlerHelper[B2CReqParams](payload, URL, http.MethodPost, authToken)
 }
