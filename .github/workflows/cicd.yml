@@ -2,8 +2,8 @@ name: go-daraja-test
 on:
   push:
     branches:
-		  - master
-      - develop
+		  - "master"
+      - "develop"
 jobs:
   test:
     runs-on: ubuntu-latest
