@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/silaselisha/go-daraja/pkg/handler"
 	"github.com/stretchr/testify/require"
 )
 
 func TestNewClient(t *testing.T) {
-	configs, err := NewDarajaClient(".")
-	require.Error(t, err)
-	require.Empty(t, configs)
+	configs, err := handler.NewDarajaClient("./../../..")
+	require.NoError(t, err)
+	require.NotEmpty(t, configs)
 }
 
 func TestAuth(t *testing.T) {
@@ -21,24 +22,24 @@ func TestAuth(t *testing.T) {
 		check          func(t *testing.T, res any, err error)
 	}{
 		{
-			name:           "200 OK Auth Request",
+			name: "200 OK Auth Request",
 			check: func(t *testing.T, response any, err error) {
 				fmt.Print(response)
-				res := response.(*DarajaAuth)
+				res := response.(*handler.DarajaAuth)
 				require.NotEmpty(t, res)
 				require.NoError(t, err)
 			},
 		},
 	}
 
-	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
-			client, err := NewDarajaClient("./../..")
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			client, err := handler.NewDarajaClient("./../../..")
 			require.NoError(t, err)
 			require.NotEmpty(t, client)
 
 			auth, err := client.ClientAuth()
-			test.check(t, auth, err)
+			tc.check(t, auth, err)
 		})
 	}
 }
