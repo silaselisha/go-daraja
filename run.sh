@@ -1,2 +1,3 @@
 #!/bin/bash
+echo "running go-daraja test"
 go test -cover -v ./...
