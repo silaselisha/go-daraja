@@ -9,9 +9,9 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
-	configs, err := handler.NewDarajaClient(".")
-	require.Error(t, err)
-	require.Empty(t, configs)
+	configs, err := handler.NewDarajaClient("./../../..")
+	require.NoError(t, err)
+	require.NotEmpty(t, configs)
 }
 
 func TestAuth(t *testing.T) {
