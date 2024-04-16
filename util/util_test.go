@@ -45,7 +45,7 @@ func TestLoadConfigs(t *testing.T) {
 		},
 		{
 			name: "valid env path",
-			path: "./..",
+			path: "./../example",
 			check: func(t *testing.T, envs *Configs, err error) {
 				fmt.Println(envs)
 				require.NoError(t, err)
