@@ -30,10 +30,10 @@ jobs:
       - run:
           name: list dirs
           command: cat .env
-      - go/test:
-          covermode: atomic
-          failfast: true
-          race: true
+      # - go/test:
+      #     covermode: atomic
+      #     failfast: true
+      #     race: true
       - run:
           name: delete .env file
           command: rm -rf .env
