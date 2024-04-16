@@ -1,0 +1,15 @@
+name: go-daraja tests
+on:
+  [push]
+jobs:
+  go-daraja-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: setting golang environment
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.22.x"
+
+      - name: run go-daraja tests
+        run: ./run.sh
