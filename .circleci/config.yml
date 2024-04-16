@@ -28,10 +28,10 @@ jobs:
       - go/mod-download
       - go/save-cache
       - run:
+          command: sleep 30
+      - run:
           name: list dirs
           command: cat .env
-      - run:
-          command: sleep 30
       - go/test:
           covermode: atomic
           failfast: true
