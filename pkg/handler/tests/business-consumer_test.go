@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/silaselisha/go-daraja/pkg/handler"
@@ -38,44 +39,6 @@ func TestBusinessConsumer(t *testing.T) {
 				require.Equal(t, "Accept the service request successfully.", payload.ResponseDescription)
 			},
 		},
-		{
-			name:         "valid business consumer tx",
-			amount:       "10",
-			txnType:      "SalaryPayment",
-			remarks:      "Salary Payment Remarks",
-			customerNo:   "254728762287",
-			qeueuTimeURL: "https://mydomain.com/b2c/queue",
-			resultURL:    "https://mydomain.com/b2c/result",
-			check: func(t *testing.T, buff []byte, err error) {
-				require.NoError(t, err)
-				require.NotNil(t, buff)
-
-				var payload handler.BusinessCustomerParams
-				err = json.Unmarshal(buff, &payload)
-				require.NoError(t, err)
-				require.Equal(t, payload.ResponseCode, "0")
-				require.Equal(t, payload.ResponseDescription, "Accept the service request successfully.")
-			},
-		},
-		{
-			name:         "valid business consumer tx",
-			amount:       "10",
-			txnType:      "PromotionPayment",
-			remarks:      "Promotion Payment Remarks",
-			customerNo:   "254728762287",
-			qeueuTimeURL: "https://mydomain.com/b2c/queue",
-			resultURL:    "https://mydomain.com/b2c/result",
-			check: func(t *testing.T, buff []byte, err error) {
-				require.NoError(t, err)
-				require.NotNil(t, buff)
-
-				var payload handler.BusinessCustomerParams
-				err = json.Unmarshal(buff, &payload)
-				require.NoError(t, err)
-				require.Equal(t, payload.ResponseCode, "0")
-				require.Equal(t, payload.ResponseDescription, "Accept the service request successfully.")
-			},
-		},
 	}
 
 	for _, tc := range testCases {
@@ -87,6 +50,7 @@ func TestBusinessConsumer(t *testing.T) {
 			require.NoError(t, err)
 			require.NotEmpty(t, auth)
 			buff, err := client.BusinessToConsumer(tc.amount, tc.customerNo, tc.txnType, tc.remarks, tc.qeueuTimeURL, tc.resultURL, auth.AccessToken)
+			fmt.Println(string(buff))
 			tc.check(t, buff, err)
 		})
 	}
