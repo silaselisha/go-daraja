@@ -1,14 +1,32 @@
 package handler
 
-import "github.com/silaselisha/go-daraja/util"
+import (
+	"fmt"
+
+	"github.com/silaselisha/go-daraja/util"
+)
 
 type Daraja interface {
 	ClientAuth() (*DarajaAuth, error)
 	NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error)
+	BusinessToConsumer(amount, customerNo, txnType, remarks, timeoutURL, resultURL, authToken string) ([]byte, error)
+	CustomerToBusiness(authToken, confirmationURL, validationURL, responseType string) ([]byte, error)
+	BusinessBuyGoods(amount float64, authToken, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string)([]byte, error)
 }
 
 type DarajaClientParams struct {
 	configs *util.Configs
+}
+
+func NewDarajaClient(path string) (Daraja, error) {
+	configs, err := util.LoadConfigs(path)
+	fmt.Println(configs.DarajaEnvironment)
+	if err != nil {
+		return nil, err
+	}
+	return &DarajaClientParams{
+		configs: configs,
+	}, nil
 }
 
 type DarajaAuth struct {
@@ -25,6 +43,13 @@ type NICallbackParams struct {
 	ResponseCode        string `json:"ResponseCode"`
 	ResponseDescription string `json:"ResponseDescription"`
 	CustomerMessage     string `json:"CustomerMessage"`
+}
+
+type BusinessCustomerParams struct {
+	ConversationID           string `json:"ConversationID"`
+	OriginatorConversationID string `json:"OriginatorConversationID"`
+	ResponseCode             string `json:"ResponseCode"`
+	ResponseDescription      string `json:"ResponseDescription"`
 }
 
 type DarajaErrorParams struct {
@@ -54,4 +79,25 @@ type ExpressReqParams struct {
 	CallBackURL       string
 	AccountReference  string
 	TransactionDesc   string
+}
+
+type B2CReqParams struct {
+	OriginatorConversationID string
+	InitiatorName            string
+	SecurityCredential       string
+	CommandID                string
+	Amount                   string
+	PartyA                   string
+	PartyB                   string
+	Remarks                  string
+	QueueTimeOutURL          string
+	ResultURL                string
+	Occassion                string
+}
+
+type C2BReqParams struct {
+	ShortCode       string
+	ResponseType    string
+	ConfirmationURL string
+	ValidationURL   string
 }

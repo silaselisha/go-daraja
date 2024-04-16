@@ -12,7 +12,8 @@ import (
 )
 
 func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error) {
-	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, cl.configs.DarajaTimestamp))
+	timestamp := util.GenTimestamp()
+	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, timestamp))
 	password := base64.URLEncoding.EncodeToString(result)
 
 	mobileNumber, err := util.PhoneNumberFormatter(phoneNumber)
@@ -23,16 +24,17 @@ func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amo
 	payload := ExpressReqParams{
 		BusinessShortCode: cl.configs.DarajaBusinessShortCode,
 		Password:          password,
-		Timestamp:         cl.configs.DarajaTimestamp,
+		Timestamp:         timestamp,
 		TransactionType:   cl.configs.DarajaTransactionType,
 		Amount:            amount,
 		PartyA:            mobileNumber,
-		PartyB:            cl.configs.DarajaPartyB,
+		PartyB:            cl.configs.DarajaBusinessShortCode,
 		PhoneNumber:       mobileNumber,
 		CallBackURL:       cl.configs.DarajaCallBackURL,
 		AccountReference:  cl.configs.DarajaAccountRef,
 		TransactionDesc:   description,
 	}
+	fmt.Printf("%+v\n", payload)
 
 	baseURL := util.BaseUrlBuilder(cl.configs.DarajaEnvironment)
 	URL := fmt.Sprintf("%s/%s", baseURL, "mpesa/stkpush/v1/processrequest")
@@ -61,6 +63,5 @@ func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amo
 	if err != nil {
 		return nil, err
 	}
-
 	return resData, nil
 }
