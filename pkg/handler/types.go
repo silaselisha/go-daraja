@@ -1,6 +1,10 @@
 package handler
 
-import "github.com/silaselisha/go-daraja/util"
+import (
+	"fmt"
+
+	"github.com/silaselisha/go-daraja/util"
+)
 
 type Daraja interface {
 	ClientAuth() (*DarajaAuth, error)
@@ -16,6 +20,7 @@ type DarajaClientParams struct {
 
 func NewDarajaClient(path string) (Daraja, error) {
 	configs, err := util.LoadConfigs(path)
+	fmt.Println(configs.DarajaEnvironment)
 	if err != nil {
 		return nil, err
 	}

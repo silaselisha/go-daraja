@@ -25,19 +25,23 @@ func (cl *DarajaClientParams) BusinessToConsumer(amount, customerNo, txnType, re
 		return nil, err
 	}
 
-	securityCred, err := util.GenSecurityCred(cl.configs, "./../..")
+	securityCred, err := util.GenSecurityCred(cl.configs, "./../../")
 	if err != nil {
 		return nil, err
 	}
 
+	mobileNumber, err := util.PhoneNumberFormatter(customerNo)
+	if err != nil {
+		return nil, err
+	}
 	//TODO: check the validity of the phone number
 	payload := B2CReqParams{
 		OriginatorConversationID: ID.String(),
 		InitiatorName:            cl.configs.DarajaInitiatorName,
 		Amount:                   amount,
 		CommandID:                txnType,
-		PartyA:                   cl.configs.DarajaPartyA,
-		PartyB:                   customerNo, //254728762287
+		PartyA:                   cl.configs.DarajaBusinessConsumerPartyA,
+		PartyB:                   mobileNumber, //254728762287
 		Remarks:                  remarks,
 		QueueTimeOutURL:          qeueuTimeOutURL,
 		ResultURL:                resultURL,
