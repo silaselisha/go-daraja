@@ -28,7 +28,7 @@ jobs:
       - go/save-cache
       - run:
           name: list dirs
-          command: cat /home/circleci/project/.env
+          command: cat .env
       - go/test:
           covermode: atomic
           failfast: true
