@@ -33,6 +33,16 @@ jobs:
           covermode: atomic
           failfast: true
           race: true
+       - run:
+          name: delete .env file
+          command: rm -rf .env
+      - persist_to_workspace:
+          root: ~/go-daraja
+          paths:
+            - "."
+        - run:
+          name: list dirs
+          command: ls -la /home/circleci
 workflows:
   build:
     jobs:
