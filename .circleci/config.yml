@@ -8,35 +8,16 @@ jobs:
       tag: '1.22.0'
     steps:
       - checkout
-      - run:
-          name: create .env file
-          command: |
-            echo "DARAJA_ENVIRONMENT=$DARAJA_ENVIRONMENT" >> .env
-            echo "DARAJA_CONSUMER_KEY=$DARAJA_CONSUMER_KEY" >> .env
-            echo "DARAJA_CONSUMER_SECRET=$DARAJA_CONSUMER_SECRET" >> .env
-            echo "DARAJA_BUSINESS_SHORT_CODE=$DARAJA_BUSINESS_SHORT_CODE" >> .env
-            echo "DARAJA_PASS_KEY=$DARAJA_PASS_KEY" >> .env
-            echo "DARAJA_TRANSACTION_TYPE=$DARAJA_TRANSACTION_TYPE" >> .env
-            echo "DARAJA_CALL_BACK_URL=$DARAJA_CALL_BACK_URL" >> .env
-            echo "DARAJA_PARTY_B=$DARAJA_PARTY_B" >> .env
-            echo "DARAJA_TIMESTAMP=$DARAJA_TIMESTAMP" >> .env
-            echo "DARAJA_ACCOUNT_REF=$DARAJA_ACCOUNT_REF" >> .env
-            echo "DARAJA_INITIATOR_NAME=$DARAJA_INITIATOR_NAME" >> .env
-            echo "DARAJA_INITIATOR_PASSWORD=$DARAJA_INITIATOR_PASSWORD" >> .env
-            echo "DARAJA_BUSINESS_CONSUMR_PARTY_A=$DARAJA_BUSINESS_CONSUMR_PARTY_A" >> .env
       - go/load-cache
       - go/mod-download
-      # - go/save-cache
+      - go/save-cache
       - run:
           name: list dirs
-          command: cat .env
+          command: ls -al
       - go/test:
           covermode: atomic
           failfast: true
           race: true
-      - run:
-          name: delete .env file
-          command: rm -rf .env
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -44,8 +25,7 @@ jobs:
 workflows:
   build:
     jobs:
-      - build_and_test:
-          context: go-daraja-test-envs
+      - build_and_test
           
 
 

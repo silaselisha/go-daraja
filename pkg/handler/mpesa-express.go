@@ -1,15 +1,34 @@
 package handler
 
 import (
-	"bytes"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/silaselisha/go-daraja/util"
 )
+
+type NICallbackParams struct {
+	MerchantRequestID   string `json:"MerchantRequestID"`
+	CheckoutRequestID   string `json:"CheckoutRequestID"`
+	ResponseCode        string `json:"ResponseCode"`
+	ResponseDescription string `json:"ResponseDescription"`
+	CustomerMessage     string `json:"CustomerMessage"`
+}
+
+type ExpressReqParams struct {
+	BusinessShortCode string
+	Password          string
+	Timestamp         string
+	TransactionType   string
+	Amount            float64
+	PartyA            string
+	PartyB            string
+	PhoneNumber       string
+	CallBackURL       string
+	AccountReference  string
+	TransactionDesc   string
+}
 
 func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error) {
 	timestamp := util.GenTimestamp()
@@ -34,34 +53,8 @@ func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amo
 		AccountReference:  cl.configs.DarajaAccountRef,
 		TransactionDesc:   description,
 	}
-	fmt.Printf("%+v\n", payload)
 
-	baseURL := util.BaseUrlBuilder(cl.configs.DarajaEnvironment)
-	URL := fmt.Sprintf("%s/%s", baseURL, "mpesa/stkpush/v1/processrequest")
+	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/stkpush/v1/processrequest")
 
-	reqData, err := json.Marshal(payload)
-	if err != nil {
-		return nil, err
-	}
-
-	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodPost, URL, bytes.NewBuffer(reqData))
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+authToken)
-
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-
-	resData, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-	return resData, nil
+	return handlerHelper[ExpressReqParams](payload, URL, http.MethodPost, authToken)
 }

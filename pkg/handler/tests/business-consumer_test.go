@@ -32,7 +32,7 @@ func TestBusinessConsumer(t *testing.T) {
 				require.NoError(t, err)
 				require.NotNil(t, buff)
 
-				var payload handler.BusinessCustomerParams
+				var payload handler.BusinessResParams
 				err = json.Unmarshal(buff, &payload)
 				require.NoError(t, err)
 				require.Equal(t, "0", payload.ResponseCode)
@@ -43,7 +43,7 @@ func TestBusinessConsumer(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := handler.NewDarajaClient("./../../..")
+			client, err := handler.NewDarajaClient("./../../../example")
 			require.NoError(t, err)
 
 			auth, err := client.ClientAuth()
