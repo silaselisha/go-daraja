@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/silaselisha/go-daraja/pkg/handler"
@@ -49,6 +50,7 @@ func TestMpesaExpress(t *testing.T) {
 			require.NoError(t, err)
 
 			payload, err := client.NIPush(tc.description, tc.phoneNumber, tc.amount, auth.AccessToken)
+			fmt.Println(string(payload))
 			tc.check(t, payload, err)
 		})
 	}
