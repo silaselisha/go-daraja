@@ -1,18 +1,18 @@
-name: go-daraja-test
+name: test
 on:
   push:
     branches:
       - develop
-		- master
+			- master
 jobs:
-  go-daraja-test:
+  test:
     runs-on: ubuntu-latest
     steps:
-       - uses: actions/checkout@v4
-		 - name: setting golang environmnet
-		   uses: actions/setup-go@v3
-			with:
-			  go-version: "1.22.x"
+      - uses: actions/checkout@v4
+      - name: setting golang environment
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.22.x"
 
-	    - name: run go-daraja test
-		   run: ./run.sh
+      - name: go-daraja test
+        run: ./run.sh
