@@ -2,6 +2,7 @@ name: go-daraja-test
 on:
   push:
     branches:
+		  - master
       - develop
 jobs:
   test:
