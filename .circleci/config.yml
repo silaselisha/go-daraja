@@ -28,7 +28,7 @@ jobs:
       - go/mod-download
       - go/save-cache
       - run:
-          command: sleep 30
+          command: sleep 600
       - run:
           name: list dirs
           command: cat .env
