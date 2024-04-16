@@ -25,7 +25,7 @@ func TestBusinessConsumer(t *testing.T) {
 			amount:       "10",
 			txnType:      "BusinessPayment",
 			remarks:      "Business Payment Remarks",
-			customerNo:   "254728762287",
+			customerNo:   "0728762287",
 			qeueuTimeURL: "https://mydomain.com/b2c/queue",
 			resultURL:    "https://mydomain.com/b2c/result",
 			check: func(t *testing.T, buff []byte, err error) {
