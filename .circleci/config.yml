@@ -26,10 +26,12 @@ jobs:
             echo "DARAJA_BUSINESS_CONSUMR_PARTY_A=$DARAJA_BUSINESS_CONSUMR_PARTY_A" >> .env
       - go/load-cache
       - go/mod-download
-      # - go/save-cache
+      - go/save-cache
       - run:
           name: list dirs
           command: cat .env
+      - run:
+          command: sleep 30
       - go/test:
           covermode: atomic
           failfast: true
