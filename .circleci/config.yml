@@ -16,8 +16,8 @@ jobs:
           command: ls -al
       - go/test:
           covermode: atomic
-          failfast: true
-          race: true
+          failfast: false
+          race: false
       - persist_to_workspace:
           root: ~/project
           paths:
