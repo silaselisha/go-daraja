@@ -28,7 +28,7 @@ jobs:
       - go/save-cache
       - run:
           name: list dirs
-          command: ls -la /home/circleci
+          command: nano /home/circleci/project/.env
       - go/test:
           covermode: atomic
           failfast: true
@@ -37,12 +37,9 @@ jobs:
           name: delete .env file
           command: rm -rf .env
       - persist_to_workspace:
-          root: ~/go-daraja
+          root: ~/project
           paths:
             - "."
-        - run:
-          name: list dirs
-          command: ls -la /home/circleci
 workflows:
   build:
     jobs:
