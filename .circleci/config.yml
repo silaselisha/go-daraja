@@ -33,7 +33,7 @@ jobs:
           covermode: atomic
           failfast: true
           race: true
-       - run:
+      - run:
           name: delete .env file
           command: rm -rf .env
       - persist_to_workspace:
