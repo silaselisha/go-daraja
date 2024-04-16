@@ -10,4 +10,4 @@ The versions currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Create an issues to regarding what you've identified to be a vulnerability.
+Create an issue for what you've identified to be a vulnerability.
