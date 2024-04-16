@@ -1,10 +1,7 @@
 package handler
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/silaselisha/go-daraja/util"
@@ -33,7 +30,8 @@ func (cl *DarajaClientParams) BusinessBuyGoods(amount float64, authToken, userna
 	if err != nil {
 		return nil, err
 	}
-	payload := &B2BReqParams{
+
+	payload := B2BReqParams{
 		Initiator:              username,
 		SecurityCredential:     securityCred,
 		CommandID:              commandID,
@@ -48,23 +46,6 @@ func (cl *DarajaClientParams) BusinessBuyGoods(amount float64, authToken, userna
 		ResultURL:              resultURL,
 	}
 
-	buff, err := json.Marshal(payload)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest(http.MethodPost, URL, bytes.NewReader(buff))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+authToken)
-
-	client := &http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	return io.ReadAll(res.Body)
+	data, err := handlerHelper[B2BReqParams](payload, URL, http.MethodPost, authToken)
+	return data, err
 }
