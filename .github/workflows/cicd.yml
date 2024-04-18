@@ -12,4 +12,4 @@ jobs:
           go-version: "1.22.x"
 
       - name: run go-daraja tests
-        run: ./run.sh
+        run: go test -cover -v ./...
