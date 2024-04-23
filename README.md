@@ -32,3 +32,5 @@ Go-daraja is an open-source project facilitating seamless integration of Safaric
     ```go
        go get github.com/silaselisha/godaraja
     ```
+
+Majority of the services provided by daraja API require the client to be authenticated before invoking them. With go-daraja a simplified interface `Daraja` shall provide the user with all necessary services such as `ClientAuth`, primarily used to generate an `access-token`. 
