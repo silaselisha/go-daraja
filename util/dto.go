@@ -18,6 +18,7 @@ type Configs struct {
 	DarajaInitiatorName          string `mapstructure:"DARAJA_INITIATOR_NAME"`
 	DarajaInitiatorPassword      string `mapstructure:"DARAJA_INITIATOR_PASSWORD"`
 	DarajaBusinessConsumerPartyA string `mapstructure:"DARAJA_BUSINESS_CONSUMR_PARTY_A"`
+	DarajaBusinessExpressCheckoutShortCode string `mapstructure:"DARAJA_BUSINESS_EXPRESS_CHECKOUT_SHORT_CODE"`
 }
 
 func LoadConfigs(path string) (envs *Configs, err error) {

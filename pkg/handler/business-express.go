@@ -9,13 +9,13 @@ import (
 )
 
 type BExpressCheckoutParams struct {
-	primaryShortCode  string
-	receiverShortCode string
-	amount            float64
-	paymentRef        string
-	callbackUrl       string
-	partnerName       string
-	RequestRefID      string
+	PrimaryShortCode  string  `json:"primaryShortCode"`
+	ReceiverShortCode string   `json:"receiverShortCode"`
+	Amount            float64 `json:"amount"`
+	PaymentRef        string  `json:"paymentRef"`
+	CallbackURL       string  `json:"callbackUrl"`
+	PartnerName       string  `json:"partnerName"`
+	RequestRefID      string  `json:"RequestRefID"`
 }
 
 func (cl *DarajaClientParams) BusinessExpressCheckout(authToken, paymentRef, callbackURL, partnerName, receiver string, amount float64) ([]byte, error) {
@@ -27,14 +27,15 @@ func (cl *DarajaClientParams) BusinessExpressCheckout(authToken, paymentRef, cal
 	}
 
 	payload := BExpressCheckoutParams{
-		primaryShortCode:  cl.configs.DarajaBusinessShortCode,
-		receiverShortCode: receiver,
-		amount:            amount,
-		paymentRef:        paymentRef,
-		callbackUrl:       callbackURL,
-		partnerName:       partnerName,
+		PrimaryShortCode:  cl.configs.DarajaBusinessExpressCheckoutShortCode,
+		ReceiverShortCode: receiver,
+		Amount:            amount,
+		PaymentRef:        paymentRef,
+		CallbackURL:       callbackURL,
+		PartnerName:       partnerName,
 		RequestRefID:      id.String(),
 	}
-	
+
+	fmt.Println(payload)
 	return handlerHelper(payload, URL, http.MethodPost, authToken)
 }
