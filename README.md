@@ -33,32 +33,32 @@ Go-daraja is an open-source project facilitating seamless integration of Safaric
        go get github.com/silaselisha/go-daraja
     ```
 
----
+
+    ``` go
+        import (
+            "log"
+            daraja "github.com/silaselisha/go-daraja/pkg/handler"
+        )
+
+        func main() {
+            // create a client by passing the path to your .env file
+            client, err := daraja.NewDarajaClient(".")
+            if err != nil {
+                log.Panic(err)
+            }
+            // generate an access token
+            auth, err := client.ClientAuth()
+            if err != nil {
+                log.Panic(err)
+            }
+            // invoke STK/NI Push
+            buff, err := client.NIPush("test STK push", "0708374149", 1, auth.AccessToken)
+            if err != nil {
+                log.Panic(err)
+            }
+            log.Print(string(buff))
+        }
+    ```
+
 **Note**:
 Majority of the services provided by daraja API require the client to be authenticated before invoking them. With go-daraja a simplified interface `Daraja` shall provide the user with all necessary services such as `ClientAuth`, primarily used to generate an `access-token`. 
-
-``` go
-    import (
-	    "log"
-	    daraja "github.com/silaselisha/go-daraja/pkg/handler"
-    )
-
-    func main() {
-        // create a client by passing the path to your .env file
-        client, err := daraja.NewDarajaClient(".")
-        if err != nil {
-            log.Panic(err)
-        }
-        // generate an access token
-        auth, err := client.ClientAuth()
-        if err != nil {
-            log.Panic(err)
-        }
-        // invoke STK/NI Push
-        buff, err := client.NIPush("test STK push", "0708374149", 1, auth.AccessToken)
-        if err != nil {
-            log.Panic(err)
-        }
-        log.Print(string(buff))
-    }
-```
