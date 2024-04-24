@@ -1,6 +1,6 @@
 # How to contribute
 
-We definitely welcome your patches and contributions to go-daraja! Please read the  contribution guidelines before proceeding.
+We definitely welcome your patches and contributions to go-daraja! Please read the  [contribution guidelines](https://github.com/silaselisha/go-daraja/blob/master/CONTRIBUTING.md) before proceeding.
 
 If you are new to github, please start by reading [Pull Request howto](https://help.github.com/articles/about-pull-requests/)
 
