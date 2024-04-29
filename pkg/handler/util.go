@@ -3,12 +3,14 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 )
 
-func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) ([]byte, error) {
+func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams| QRReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) ([]byte, error) {
+	fmt.Println(payload)
 	buff, err := json.Marshal(&payload)
 	if err != nil {
 		return nil, err

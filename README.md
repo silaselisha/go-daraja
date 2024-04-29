@@ -26,7 +26,9 @@ Go-daraja is an open-source project facilitating seamless integration of Safaric
         cd duka-letu
         go mod init github.com/user-github-name/project-name
     ```
-
+    ```cmd
+       cp example/.env .env
+    ```
 3. Install go-daraja package
 
     ```go
