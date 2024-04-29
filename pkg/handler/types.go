@@ -13,6 +13,7 @@ type Daraja interface {
 	CustomerToBusiness(authToken, confirmationURL, validationURL, responseType string) ([]byte, error)
 	BusinessBuyGoods(amount float64, authToken, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string) ([]byte, error)
 	BusinessExpressCheckout(authToken, paymentRef, callbackURL, partnerName, receiver string, amount float64) ([]byte, error)
+	DynamicQRCode(amount float64, qrSize int64, trxCode TRX_CODE, refNo, marchantName, authToken string) ([]byte, error)
 }
 
 type DarajaClientParams struct {

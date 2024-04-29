@@ -70,7 +70,7 @@ func GenSecurityCred(config *Configs, filePath string) (string, error) {
 		return "", err
 	}
 
-	// 1 define a cert block
+	// define a cert block
 	certBlock, _ := pem.Decode(buff)
 	cert, err := x509.ParseCertificate(certBlock.Bytes)
 	if err != nil {
