@@ -23,7 +23,7 @@ type B2BReqParams struct {
 	ResultURL              string
 }
 
-func (cl *DarajaClientParams) BusinessBuyGoods(amount float64, authToken, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) ([]byte, error) {
+func (cl *DarajaClient) BusinessBuyGoods(amount float64, authToken, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) ([]byte, error) {
 	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2b/v1/paymentrequest")
 
 	securityCred, err := util.GenSecurityCred(cl.configs, "./../..")
