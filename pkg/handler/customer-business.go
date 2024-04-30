@@ -7,8 +7,10 @@ import (
 	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
+type b2cType int
+
 const (
-	CANCELLED = iota
+	CANCELLED b2cType = iota
 	COMPLETED
 )
 
@@ -19,12 +21,22 @@ type C2BReqParams struct {
 	ValidationURL   string
 }
 
-func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL, responseType string) ([]byte, error) {
+func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) ([]byte, error) {
 	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/c2b/v1/registerurl")
 
+	var command string
+	switch {
+	case responseType == 0:
+		command = "CANCELLED"
+	case responseType == 1:
+		command = "COMPLETED"
+
+	default:
+		command = "CANCELLED"
+	}
 	payload := C2BReqParams{
 		ShortCode:       cl.configs.DarajaBusinessShortCode,
-		ResponseType:    responseType,
+		ResponseType:    command,
 		ConfirmationURL: confirmationURL,
 		ValidationURL:   validationURL,
 	}

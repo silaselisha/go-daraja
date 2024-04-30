@@ -6,11 +6,10 @@ import (
 
 type Daraja interface {
 	NIPush(description string, phoneNumber string, amount float64) ([]byte, error)
-	BusinessToConsumer(amount float64, customerNo, txnType, remarks, timeoutURL, resultURL string) ([]byte, error)
-	CustomerToBusiness(confirmationURL, validationURL, responseType string) ([]byte, error)
+	BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, timeoutURL, resultURL string) ([]byte, error)
+	CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) ([]byte, error)
 	BusinessBuyGoods(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string) ([]byte, error)
 	BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) ([]byte, error)
-	DynamicQRCode(amount float64, qrSize int64, trxCode TRX_CODE, refNo, marchantName string) ([]byte, error)
 }
 
 type DarajaClient struct {

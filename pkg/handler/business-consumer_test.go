@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -12,7 +11,7 @@ func TestBusinessConsumer(t *testing.T) {
 	testCases := []struct {
 		name         string
 		amount       float64
-		txnType      string
+		txnType      txnType
 		remarks      string
 		customerNo   string
 		qeueuTimeURL string
@@ -22,7 +21,7 @@ func TestBusinessConsumer(t *testing.T) {
 		{
 			name:         "valid business consumer txn",
 			amount:       10,
-			txnType:      "BusinessPayment",
+			txnType:      BusinessPayment,
 			remarks:      "Business Payment Remarks",
 			customerNo:   "0728762287",
 			qeueuTimeURL: "https://mydomain.com/b2c/queue",
@@ -45,8 +44,7 @@ func TestBusinessConsumer(t *testing.T) {
 			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
 
-			buff, err := client.BusinessToConsumer(tc.amount, tc.customerNo, tc.txnType, tc.remarks, tc.qeueuTimeURL, tc.resultURL)
-			fmt.Println(string(buff))
+			buff, err := client.BusinessToConsumer(tc.amount, tc.txnType, tc.customerNo, tc.remarks, tc.qeueuTimeURL, tc.resultURL)
 			tc.check(t, buff, err)
 		})
 	}
