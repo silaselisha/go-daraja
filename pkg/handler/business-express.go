@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
 type BExpressCheckoutParams struct {
@@ -19,7 +19,7 @@ type BExpressCheckoutParams struct {
 }
 
 func (cl *DarajaClient) BusinessExpressCheckout(authToken, paymentRef, callbackURL, partnerName, receiver string, amount float64) ([]byte, error) {
-	URL := fmt.Sprintf("%s%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "/v1/ussdpush/get-msisdn")
+	URL := fmt.Sprintf("%s%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "/v1/ussdpush/get-msisdn")
 
 	id, err := uuid.NewRandom()
 	if err != nil {

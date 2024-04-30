@@ -5,7 +5,8 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/pkg/x509"
+	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
 const (
@@ -29,18 +30,18 @@ type B2CReqParams struct {
 }
 
 func (cl *DarajaClient) BusinessToConsumer(amount, customerNo, txnType, remarks, qeueuTimeOutURL, resultURL, authToken string) ([]byte, error) {
-	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2c/v3/paymentrequest")
+	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2c/v3/paymentrequest")
 	ID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
 
-	securityCred, err := util.GenSecurityCred(cl.configs, "./../../")
+	securityCred, err := x509.GenSecurityCred(cl.configs, "./../x509")
 	if err != nil {
 		return nil, err
 	}
 
-	mobileNumber, err := util.PhoneNumberFormatter(customerNo)
+	mobileNumber, err := builder.PhoneNumberFormatter(customerNo)
 	if err != nil {
 		return nil, err
 	}

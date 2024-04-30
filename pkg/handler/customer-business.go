@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
 const (
@@ -20,7 +20,7 @@ type C2BReqParams struct {
 }
 
 func (cl *DarajaClient) CustomerToBusiness(authToken, confirmationURL, validationURL, responseType string) ([]byte, error) {
-	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/c2b/v1/registerurl")
+	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/c2b/v1/registerurl")
 
 	payload := C2BReqParams{
 		ShortCode:       cl.configs.DarajaBusinessShortCode,

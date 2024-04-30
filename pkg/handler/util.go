@@ -37,3 +37,4 @@ func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqPara
 	}()
 	return io.ReadAll(res.Body)
 }
+
