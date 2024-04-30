@@ -33,7 +33,7 @@ type QRRespParams struct {
 	QRCode              string
 }
 
-func (cl *DarajaClient) DynamicQRCode(amount float64, qrSize int64, trxCode TRX_CODE, refNo, merchantName, authToken string) ([]byte, error) {
+func (cl *DarajaClient) DynamicQRCode(amount float64, qrSize int64, trxCode TRX_CODE, refNo, merchantName string) ([]byte, error) {
 	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/qrcode/v1/generate")
 
 	var txCode string
@@ -58,5 +58,5 @@ func (cl *DarajaClient) DynamicQRCode(amount float64, qrSize int64, trxCode TRX_
 		Size:         qrSize,
 	}
 
-	return handlerHelper(payload, URL, http.MethodPost, authToken)
+	return handlerHelper[QRReqParams](payload, URL, http.MethodPost, cl.accessToken)
 }

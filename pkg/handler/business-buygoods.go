@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/silaselisha/go-daraja/pkg/x509"
+	"github.com/silaselisha/go-daraja/internal/x509"
 	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
@@ -24,10 +24,10 @@ type B2BReqParams struct {
 	ResultURL              string
 }
 
-func (cl *DarajaClient) BusinessBuyGoods(amount float64, authToken, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) ([]byte, error) {
+func (cl *DarajaClient) BusinessBuyGoods(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) ([]byte, error) {
 	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2b/v1/paymentrequest")
 
-	securityCred, err := x509.GenSecurityCred(cl.configs, "./../x509")
+	securityCred, err := x509.GenSecurityCred(cl.configs, "./../../internal/x509")
 	if err != nil {
 		return nil, err
 	}
@@ -47,6 +47,6 @@ func (cl *DarajaClient) BusinessBuyGoods(amount float64, authToken, username, sh
 		ResultURL:              resultURL,
 	}
 
-	data, err := handlerHelper[B2BReqParams](payload, URL, http.MethodPost, authToken)
+	data, err := handlerHelper[B2BReqParams](payload, URL, http.MethodPost, cl.accessToken)
 	return data, err
 }

@@ -30,7 +30,7 @@ type ExpressReqParams struct {
 	TransactionDesc   string
 }
 
-func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error) {
+func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount float64) ([]byte, error) {
 	timestamp := builder.GenTimestamp()
 	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, timestamp))
 	password := base64.URLEncoding.EncodeToString(result)
@@ -56,5 +56,5 @@ func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount fl
 
 	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/stkpush/v1/processrequest")
 
-	return handlerHelper[ExpressReqParams](payload, URL, http.MethodPost, authToken)
+	return handlerHelper[ExpressReqParams](payload, URL, http.MethodPost, cl.accessToken)
 }

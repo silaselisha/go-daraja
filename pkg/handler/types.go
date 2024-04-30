@@ -1,34 +1,21 @@
 package handler
 
 import (
-	"fmt"
-
 	"github.com/silaselisha/go-daraja/internal/config"
 )
 
 type Daraja interface {
-	ClientAuth() (*DarajaAuth, error)
-	NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error)
-	BusinessToConsumer(amount, customerNo, txnType, remarks, timeoutURL, resultURL, authToken string) ([]byte, error)
-	CustomerToBusiness(authToken, confirmationURL, validationURL, responseType string) ([]byte, error)
-	BusinessBuyGoods(amount float64, authToken, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string) ([]byte, error)
-	BusinessExpressCheckout(authToken, paymentRef, callbackURL, partnerName, receiver string, amount float64) ([]byte, error)
-	DynamicQRCode(amount float64, qrSize int64, trxCode TRX_CODE, refNo, marchantName, authToken string) ([]byte, error)
+	NIPush(description string, phoneNumber string, amount float64) ([]byte, error)
+	BusinessToConsumer(amount float64, customerNo, txnType, remarks, timeoutURL, resultURL string) ([]byte, error)
+	CustomerToBusiness(confirmationURL, validationURL, responseType string) ([]byte, error)
+	BusinessBuyGoods(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string) ([]byte, error)
+	BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) ([]byte, error)
+	DynamicQRCode(amount float64, qrSize int64, trxCode TRX_CODE, refNo, marchantName string) ([]byte, error)
 }
 
 type DarajaClient struct {
-	configs *config.Configs
-}
-
-func NewDarajaClient(path string) (Daraja, error) {
-	configs, err := config.LoadConfigs(path)
-	fmt.Println(configs.DarajaEnvironment)
-	if err != nil {
-		return nil, err
-	}
-	return &DarajaClient {
-		configs: configs,
-	}, nil
+	configs     *config.Configs
+	accessToken string
 }
 
 type BusinessResParams struct {
@@ -51,4 +38,21 @@ type CallbackMetadata struct {
 type ItemParams struct {
 	Name  string `json:"name,omitempty"`
 	Value string `json:"value,omitempty"`
+}
+
+func NewDarajaClient(path string) (Daraja, error) {
+	configs, err := config.LoadConfigs(path)
+	if err != nil {
+		return nil, err
+	}
+
+	auth, err := ClientAuth(configs)
+	if err != nil {
+		return nil, err
+	}
+
+	return &DarajaClient{
+		configs:     configs,
+		accessToken: auth.AccessToken,
+	}, nil
 }

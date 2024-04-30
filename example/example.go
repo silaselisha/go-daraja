@@ -49,14 +49,7 @@ func dukaHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		auth, err := darajaClient.ClientAuth()
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
-
-		res, err := darajaClient.NIPush(duka.Description, duka.PhoneNumber, amount, auth.AccessToken)
+		res, err := darajaClient.NIPush(duka.Description, duka.PhoneNumber, amount)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))

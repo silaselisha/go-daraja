@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/silaselisha/go-daraja/pkg/x509"
+	"github.com/silaselisha/go-daraja/internal/x509"
 	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
@@ -20,7 +20,7 @@ type B2CReqParams struct {
 	InitiatorName            string
 	SecurityCredential       string
 	CommandID                string
-	Amount                   string
+	Amount                   float64
 	PartyA                   string
 	PartyB                   string
 	Remarks                  string
@@ -29,14 +29,14 @@ type B2CReqParams struct {
 	Occassion                string
 }
 
-func (cl *DarajaClient) BusinessToConsumer(amount, customerNo, txnType, remarks, qeueuTimeOutURL, resultURL, authToken string) ([]byte, error) {
+func (cl *DarajaClient) BusinessToConsumer(amount float64, customerNo, txnType, remarks, qeueuTimeOutURL, resultURL string) ([]byte, error) {
 	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2c/v3/paymentrequest")
 	ID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
 
-	securityCred, err := x509.GenSecurityCred(cl.configs, "./../x509")
+	securityCred, err := x509.GenSecurityCred(cl.configs, "./../../internal/x509")
 	if err != nil {
 		return nil, err
 	}
@@ -59,5 +59,5 @@ func (cl *DarajaClient) BusinessToConsumer(amount, customerNo, txnType, remarks,
 		SecurityCredential:       securityCred,
 	}
 
-	return handlerHelper[B2CReqParams](payload, URL, http.MethodPost, authToken)
+	return handlerHelper[B2CReqParams](payload, URL, http.MethodPost, cl.accessToken)
 }

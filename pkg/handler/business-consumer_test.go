@@ -11,7 +11,7 @@ import (
 func TestBusinessConsumer(t *testing.T) {
 	testCases := []struct {
 		name         string
-		amount       string
+		amount       float64
 		txnType      string
 		remarks      string
 		customerNo   string
@@ -21,7 +21,7 @@ func TestBusinessConsumer(t *testing.T) {
 	}{
 		{
 			name:         "valid business consumer txn",
-			amount:       "10",
+			amount:       10,
 			txnType:      "BusinessPayment",
 			remarks:      "Business Payment Remarks",
 			customerNo:   "0728762287",
@@ -45,10 +45,7 @@ func TestBusinessConsumer(t *testing.T) {
 			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
 
-			auth, err := client.ClientAuth()
-			require.NoError(t, err)
-			require.NotEmpty(t, auth)
-			buff, err := client.BusinessToConsumer(tc.amount, tc.customerNo, tc.txnType, tc.remarks, tc.qeueuTimeURL, tc.resultURL, auth.AccessToken)
+			buff, err := client.BusinessToConsumer(tc.amount, tc.customerNo, tc.txnType, tc.remarks, tc.qeueuTimeURL, tc.resultURL)
 			fmt.Println(string(buff))
 			tc.check(t, buff, err)
 		})
