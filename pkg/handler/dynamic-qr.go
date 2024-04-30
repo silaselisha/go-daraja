@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
 type TRX_CODE int
@@ -34,7 +34,7 @@ type QRRespParams struct {
 }
 
 func (cl *DarajaClient) DynamicQRCode(amount float64, qrSize int64, trxCode TRX_CODE, refNo, merchantName, authToken string) ([]byte, error) {
-	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/qrcode/v1/generate")
+	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/qrcode/v1/generate")
 
 	var txCode string
 	switch {

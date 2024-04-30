@@ -3,7 +3,7 @@ package handler
 import (
 	"fmt"
 
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/internal/config"
 )
 
 type Daraja interface {
@@ -17,11 +17,11 @@ type Daraja interface {
 }
 
 type DarajaClient struct {
-	configs *util.Configs
+	configs *config.Configs
 }
 
 func NewDarajaClient(path string) (Daraja, error) {
-	configs, err := util.LoadConfigs(path)
+	configs, err := config.LoadConfigs(path)
 	fmt.Println(configs.DarajaEnvironment)
 	if err != nil {
 		return nil, err

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/silaselisha/go-daraja/pkg/handler"
 	"github.com/stretchr/testify/require"
+	"github.com/silaselisha/go-daraja/pkg/handler"
 )
 
 func TestCustomerToBusiness(t *testing.T) {
