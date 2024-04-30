@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/silaselisha/go-daraja/pkg/handler"
 	"github.com/stretchr/testify/require"
 )
 
@@ -26,7 +25,7 @@ func TestMpesaExpress(t *testing.T) {
 			description: "test payment",
 			amount:      1,
 			check: func(t *testing.T, data []byte, err error) {
-				var payload handler.NICallbackParams
+				var payload NICallbackParams
 				require.NoError(t, err)
 				err = json.Unmarshal(data, &payload)
 				require.NoError(t, err)
@@ -41,15 +40,11 @@ func TestMpesaExpress(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := handler.NewDarajaClient("./../../../example")
+			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
 			require.NotEmpty(t, client)
 
-			auth, err := client.ClientAuth()
-			require.NotEmpty(t, auth)
-			require.NoError(t, err)
-
-			payload, err := client.NIPush(tc.description, tc.phoneNumber, tc.amount, auth.AccessToken)
+			payload, err := client.NIPush(tc.description, tc.phoneNumber, tc.amount)
 			fmt.Println(string(payload))
 			tc.check(t, payload, err)
 		})

@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/silaselisha/go-daraja/pkg/handler"
 )
 
 func TestCustomerToBusiness(t *testing.T) {
@@ -24,7 +23,7 @@ func TestCustomerToBusiness(t *testing.T) {
 			check: func(t *testing.T, buff []byte, err error) {
 				require.NotEmpty(t, buff)
 				require.NoError(t, err)
-				var payload handler.BusinessResParams
+				var payload BusinessResParams
 				err = json.Unmarshal(buff, &payload)
 				require.NoError(t, err)
 				require.Equal(t, "0", payload.ResponseCode)
@@ -35,12 +34,10 @@ func TestCustomerToBusiness(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := handler.NewDarajaClient("./../../../example")
-			require.NoError(t, err)
-			auth, err := client.ClientAuth()
+			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
 
-			buff, err := client.CustomerToBusiness(auth.AccessToken, tc.confirmationURL, tc.validationURL, tc.responseType)
+			buff, err := client.CustomerToBusiness(tc.confirmationURL, tc.validationURL, tc.responseType)
 			tc.check(t, buff, err)
 		})
 	}

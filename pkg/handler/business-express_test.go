@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/silaselisha/go-daraja/pkg/handler"
 	"github.com/stretchr/testify/require"
 )
 
@@ -34,12 +33,10 @@ func TestBusinessExpress(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := handler.NewDarajaClient("./../../../example")
+			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
-			auth, err := client.ClientAuth()
-			require.NoError(t, err)
-
-			buff, err := client.BusinessExpressCheckout(auth.AccessToken, tc.paymentRef, tc.callbackURL, tc.partnerName, tc.receiver, tc.amount)
+		
+			buff, err := client.BusinessExpressCheckout(tc.paymentRef, tc.callbackURL, tc.partnerName, tc.receiver, tc.amount)
 			tc.check(t, buff, err)
 		})
 	}

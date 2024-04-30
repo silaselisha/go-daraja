@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/silaselisha/go-daraja/pkg/handler"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,7 +14,7 @@ func TestDynamicQRCode(t *testing.T) {
 		qrSize       int64
 		refNo        string
 		merchantName string
-		trxCode      handler.TRX_CODE
+		trxCode      TRX_CODE
 		check        func(t *testing.T, buff []byte, err error)
 	}{
 		{
@@ -24,7 +23,7 @@ func TestDynamicQRCode(t *testing.T) {
 			qrSize:       300,
 			refNo:        "Test-Invoice",
 			merchantName: "Test-Supermarket",
-			trxCode:      handler.BG,
+			trxCode:      BG,
 			check: func(t *testing.T, buff []byte, err error) {
 				require.NoError(t, err)
 				fmt.Print(string(buff))
@@ -34,11 +33,10 @@ func TestDynamicQRCode(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := handler.NewDarajaClient("./../../../example")
+			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
-			auth, err := client.ClientAuth()
-			require.NoError(t, err)
-			buff, err := client.DynamicQRCode(tc.amount, tc.qrSize, tc.trxCode, tc.refNo, tc.merchantName, auth.AccessToken)
+
+			buff, err := client.DynamicQRCode(tc.amount, tc.qrSize, tc.trxCode, tc.refNo, tc.merchantName)
 			tc.check(t, buff, err)
 		})
 	}

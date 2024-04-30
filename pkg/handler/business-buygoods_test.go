@@ -51,10 +51,8 @@ func TestBusinessBuyGoods(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
-			auth, err := client.ClientAuth()
-			require.NoError(t, err)
 
-			buff, err := client.BusinessBuyGoods(tc.amount, auth.AccessToken, tc.username, tc.shortCode, tc.commandID, tc.remarks, tc.resultURL, tc.qeueuTimeOutURL, tc.receiverID, tc.senderID, tc.accountRefrence)
+			buff, err := client.BusinessBuyGoods(tc.amount, tc.username, tc.shortCode, tc.commandID, tc.remarks, tc.resultURL, tc.qeueuTimeOutURL, tc.receiverID, tc.senderID, tc.accountRefrence)
 			tc.check(t, buff, err)
 		})
 	}
