@@ -28,7 +28,7 @@ type B2CReqParams struct {
 	Occassion                string
 }
 
-func (cl *DarajaClientParams) BusinessToConsumer(amount, customerNo, txnType, remarks, qeueuTimeOutURL, resultURL, authToken string) ([]byte, error) {
+func (cl *DarajaClient) BusinessToConsumer(amount, customerNo, txnType, remarks, qeueuTimeOutURL, resultURL, authToken string) ([]byte, error) {
 	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2c/v3/paymentrequest")
 	ID, err := uuid.NewRandom()
 	if err != nil {

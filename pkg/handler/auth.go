@@ -17,7 +17,7 @@ type DarajaAuth struct {
 	ErrorMessage string `json:"errorMessage,omitempty"`
 }
 
-func (cl *DarajaClientParams) ClientAuth() (*DarajaAuth, error) {
+func (cl *DarajaClient) ClientAuth() (*DarajaAuth, error) {
 	client := &http.Client{}
 
 	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")

@@ -16,7 +16,7 @@ type Daraja interface {
 	DynamicQRCode(amount float64, qrSize int64, trxCode TRX_CODE, refNo, marchantName, authToken string) ([]byte, error)
 }
 
-type DarajaClientParams struct {
+type DarajaClient struct {
 	configs *util.Configs
 }
 
@@ -26,7 +26,7 @@ func NewDarajaClient(path string) (Daraja, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &DarajaClientParams{
+	return &DarajaClient {
 		configs: configs,
 	}, nil
 }
