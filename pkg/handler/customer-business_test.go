@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -10,19 +11,21 @@ import (
 func TestCustomerToBusiness(t *testing.T) {
 	testCases := []struct {
 		name            string
-		responseType    string
+		responseType    b2cType
 		validationURL   string
 		confirmationURL string
 		check           func(t *testing.T, buff []byte, err error)
 	}{
 		{
-			name:            "valid customer to business txn",
-			responseType:    "Canceled",
+			name:            "valid customer to business cancelled txn",
+			responseType:    COMPLETED,
 			validationURL:   "https://mydomain.com/validation",
 			confirmationURL: "https://mydomain.com/confirmation",
 			check: func(t *testing.T, buff []byte, err error) {
-				require.NotEmpty(t, buff)
 				require.NoError(t, err)
+				require.NotEmpty(t, buff)
+
+				fmt.Println(string(buff))
 				var payload BusinessResParams
 				err = json.Unmarshal(buff, &payload)
 				require.NoError(t, err)

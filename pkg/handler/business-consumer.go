@@ -5,12 +5,14 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/silaselisha/go-daraja/internal/x509"
 	"github.com/silaselisha/go-daraja/internal/builder"
+	"github.com/silaselisha/go-daraja/internal/x509"
 )
 
+type txnType int
+
 const (
-	SalaryPayment = iota
+	SalaryPayment txnType = iota
 	BusinessPayment
 	PromotionalPayment
 )
@@ -29,7 +31,7 @@ type B2CReqParams struct {
 	Occassion                string
 }
 
-func (cl *DarajaClient) BusinessToConsumer(amount float64, customerNo, txnType, remarks, qeueuTimeOutURL, resultURL string) ([]byte, error) {
+func (cl *DarajaClient) BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, qeueuTimeOutURL, resultURL string) ([]byte, error) {
 	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2c/v3/paymentrequest")
 	ID, err := uuid.NewRandom()
 	if err != nil {
@@ -46,11 +48,22 @@ func (cl *DarajaClient) BusinessToConsumer(amount float64, customerNo, txnType, 
 		return nil, err
 	}
 
+	var commandID string
+	switch {
+	case txnType == 0:
+		commandID = "SalaryPayment"
+	case txnType == 1:
+		commandID = "BusinessPayment"
+	case txnType == 2:
+		commandID = "PromotionalPayment"
+	default:
+		commandID = "SalaryPayment"
+	}
 	payload := B2CReqParams{
 		OriginatorConversationID: ID.String(),
 		InitiatorName:            cl.configs.DarajaInitiatorName,
 		Amount:                   amount,
-		CommandID:                txnType,
+		CommandID:                commandID,
 		PartyA:                   cl.configs.DarajaBusinessConsumerPartyA,
 		PartyB:                   mobileNumber,
 		Remarks:                  remarks,

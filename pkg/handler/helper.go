@@ -3,14 +3,12 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
 )
 
-func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams| QRReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) ([]byte, error) {
-	fmt.Println(payload)
+func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) ([]byte, error) {
 	buff, err := json.Marshal(&payload)
 	if err != nil {
 		return nil, err
@@ -30,11 +28,10 @@ func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqPara
 		return nil, err
 	}
 
-	defer func(){
+	defer func() {
 		if err := res.Body.Close(); err != nil {
 			log.Fatalf("failed to close response body %v\n", err)
 		}
 	}()
 	return io.ReadAll(res.Body)
 }
-
