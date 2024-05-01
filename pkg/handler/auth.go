@@ -6,7 +6,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/internal/auth"
+	"github.com/silaselisha/go-daraja/internal/config"
+	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
 type DarajaAuth struct {
@@ -17,17 +19,19 @@ type DarajaAuth struct {
 	ErrorMessage string `json:"errorMessage,omitempty"`
 }
 
-func (cl *DarajaClientParams) ClientAuth() (*DarajaAuth, error) {
+func ClientAuth(cfgs *config.Configs) (*DarajaAuth, error) {
 	client := &http.Client{}
 
-	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
+	fmt.Println(cfgs.DarajaEnvironment)
+
+	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cfgs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
 
 	req, err := http.NewRequest(http.MethodGet, URL, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	authToken := util.GenAuthorizationToken(cl.configs.DarajaConsumerKey, cl.configs.DarajaConsumerSecret)
+	authToken := auth.GenAuthorizationToken(cfgs.DarajaConsumerKey, cfgs.DarajaConsumerSecret)
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Basic "+authToken)

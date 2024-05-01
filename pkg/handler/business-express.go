@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
 type BExpressCheckoutParams struct {
@@ -18,8 +18,8 @@ type BExpressCheckoutParams struct {
 	RequestRefID      string  `json:"RequestRefID"`
 }
 
-func (cl *DarajaClientParams) BusinessExpressCheckout(authToken, paymentRef, callbackURL, partnerName, receiver string, amount float64) ([]byte, error) {
-	URL := fmt.Sprintf("%s%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "/v1/ussdpush/get-msisdn")
+func (cl *DarajaClient) BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) (*DarajaResParams, error) {
+	URL := fmt.Sprintf("%s%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "/v1/ussdpush/get-msisdn")
 
 	id, err := uuid.NewRandom()
 	if err != nil {
@@ -37,5 +37,5 @@ func (cl *DarajaClientParams) BusinessExpressCheckout(authToken, paymentRef, cal
 	}
 
 	fmt.Println(payload)
-	return handlerHelper(payload, URL, http.MethodPost, authToken)
+	return handlerHelper(payload, URL, http.MethodPost, cl.accessToken)
 }
