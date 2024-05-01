@@ -1,40 +1,32 @@
 package handler
 
 import (
-	"fmt"
-
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/internal/config"
 )
 
 type Daraja interface {
-	ClientAuth() (*DarajaAuth, error)
-	NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error)
-	BusinessToConsumer(amount, customerNo, txnType, remarks, timeoutURL, resultURL, authToken string) ([]byte, error)
-	CustomerToBusiness(authToken, confirmationURL, validationURL, responseType string) ([]byte, error)
-	BusinessBuyGoods(amount float64, authToken, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string) ([]byte, error)
-	BusinessExpressCheckout(authToken, paymentRef, callbackURL, partnerName, receiver string, amount float64) ([]byte, error)
+	NIPush(description string, phoneNumber string, amount float64) (*DarajaResParams, error)
+	BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, timeoutURL, resultURL string) (*DarajaResParams, error)
+	CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error)
+	BusinessBuyGoods(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string) (*DarajaResParams, error)
+	BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) (*DarajaResParams, error)
 }
 
-type DarajaClientParams struct {
-	configs *util.Configs
+type DarajaClient struct {
+	configs     *config.Configs
+	accessToken string
 }
 
-func NewDarajaClient(path string) (Daraja, error) {
-	configs, err := util.LoadConfigs(path)
-	fmt.Println(configs.DarajaEnvironment)
-	if err != nil {
-		return nil, err
+type DarajaResParams struct {
+	ConversationID           string
+	OriginatorConversationID string
+	ResponseCode             string
+	ResponseDescription      string
+	CustomerMessage          string
+	ResponseBody             struct {
+		Code   string `json:"code"`
+		Status string `json:"status"`
 	}
-	return &DarajaClientParams{
-		configs: configs,
-	}, nil
-}
-
-type BusinessResParams struct {
-	ConversationID           string `json:"ConversationID"`
-	OriginatorConversationID string `json:"OriginatorConversationID"`
-	ResponseCode             string `json:"ResponseCode"`
-	ResponseDescription      string `json:"ResponseDescription"`
 }
 
 type DarajaErrorParams struct {
@@ -50,4 +42,21 @@ type CallbackMetadata struct {
 type ItemParams struct {
 	Name  string `json:"name,omitempty"`
 	Value string `json:"value,omitempty"`
+}
+
+func NewDarajaClient(path string) (Daraja, error) {
+	configs, err := config.LoadConfigs(path)
+	if err != nil {
+		return nil, err
+	}
+
+	auth, err := ClientAuth(configs)
+	if err != nil {
+		return nil, err
+	}
+
+	return &DarajaClient{
+		configs:     configs,
+		accessToken: auth.AccessToken,
+	}, nil
 }

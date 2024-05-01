@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/internal/builder"
 )
 
 type NICallbackParams struct {
@@ -30,12 +30,12 @@ type ExpressReqParams struct {
 	TransactionDesc   string
 }
 
-func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amount float64, authToken string) ([]byte, error) {
-	timestamp := util.GenTimestamp()
+func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount float64) (*DarajaResParams, error) {
+	timestamp := builder.GenTimestamp()
 	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, timestamp))
 	password := base64.URLEncoding.EncodeToString(result)
 
-	mobileNumber, err := util.PhoneNumberFormatter(phoneNumber)
+	mobileNumber, err := builder.PhoneNumberFormatter(phoneNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (cl *DarajaClientParams) NIPush(description string, phoneNumber string, amo
 		TransactionDesc:   description,
 	}
 
-	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/stkpush/v1/processrequest")
+	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/stkpush/v1/processrequest")
 
-	return handlerHelper[ExpressReqParams](payload, URL, http.MethodPost, authToken)
+	return handlerHelper[ExpressReqParams](payload, URL, http.MethodPost, cl.accessToken)
 }

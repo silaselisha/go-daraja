@@ -5,11 +5,14 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/silaselisha/go-daraja/util"
+	"github.com/silaselisha/go-daraja/internal/builder"
+	"github.com/silaselisha/go-daraja/internal/x509"
 )
 
+type txnType int
+
 const (
-	SalaryPayment = iota
+	SalaryPayment txnType = iota
 	BusinessPayment
 	PromotionalPayment
 )
@@ -19,7 +22,7 @@ type B2CReqParams struct {
 	InitiatorName            string
 	SecurityCredential       string
 	CommandID                string
-	Amount                   string
+	Amount                   float64
 	PartyA                   string
 	PartyB                   string
 	Remarks                  string
@@ -28,28 +31,39 @@ type B2CReqParams struct {
 	Occassion                string
 }
 
-func (cl *DarajaClientParams) BusinessToConsumer(amount, customerNo, txnType, remarks, qeueuTimeOutURL, resultURL, authToken string) ([]byte, error) {
-	URL := fmt.Sprintf("%s/%s", util.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2c/v3/paymentrequest")
+func (cl *DarajaClient) BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, qeueuTimeOutURL, resultURL string) (*DarajaResParams, error) {
+	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/b2c/v3/paymentrequest")
 	ID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
 
-	securityCred, err := util.GenSecurityCred(cl.configs, "./../../")
+	securityCred, err := x509.GenSecurityCred(cl.configs, "./../../internal/x509")
 	if err != nil {
 		return nil, err
 	}
 
-	mobileNumber, err := util.PhoneNumberFormatter(customerNo)
+	mobileNumber, err := builder.PhoneNumberFormatter(customerNo)
 	if err != nil {
 		return nil, err
 	}
 
+	var commandID string
+	switch {
+	case txnType == 0:
+		commandID = "SalaryPayment"
+	case txnType == 1:
+		commandID = "BusinessPayment"
+	case txnType == 2:
+		commandID = "PromotionalPayment"
+	default:
+		commandID = "SalaryPayment"
+	}
 	payload := B2CReqParams{
 		OriginatorConversationID: ID.String(),
 		InitiatorName:            cl.configs.DarajaInitiatorName,
 		Amount:                   amount,
-		CommandID:                txnType,
+		CommandID:                commandID,
 		PartyA:                   cl.configs.DarajaBusinessConsumerPartyA,
 		PartyB:                   mobileNumber,
 		Remarks:                  remarks,
@@ -58,5 +72,5 @@ func (cl *DarajaClientParams) BusinessToConsumer(amount, customerNo, txnType, re
 		SecurityCredential:       securityCred,
 	}
 
-	return handlerHelper[B2CReqParams](payload, URL, http.MethodPost, authToken)
+	return handlerHelper[B2CReqParams](payload, URL, http.MethodPost, cl.accessToken)
 }

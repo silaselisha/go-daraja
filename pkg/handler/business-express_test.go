@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"fmt"
 	"testing"
 
-	"github.com/silaselisha/go-daraja/pkg/handler"
 	"github.com/stretchr/testify/require"
 )
 
@@ -16,7 +14,7 @@ func TestBusinessExpress(t *testing.T) {
 		partnerName string
 		receiver    string
 		amount      float64
-		check       func(t *testing.T, buff []byte, err error)
+		check       func(t *testing.T, data *DarajaResParams, err error)
 	}{
 		{
 			name:        "valid business express checkout",
@@ -25,22 +23,22 @@ func TestBusinessExpress(t *testing.T) {
 			partnerName: "Test",
 			receiver:    "174379",
 			amount:      10,
-			check: func(t *testing.T, buff []byte, err error) {
+			check: func(t *testing.T, data *DarajaResParams, err error) {
 				require.NoError(t, err)
-				fmt.Print(string(buff))
+
+				require.Equal(t, "0", data.ResponseBody.Code)
+				require.Equal(t, "USSD Initiated Successfully", data.ResponseBody.Status)
 			},
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := handler.NewDarajaClient("./../../../example")
-			require.NoError(t, err)
-			auth, err := client.ClientAuth()
+			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
 
-			buff, err := client.BusinessExpressCheckout(auth.AccessToken, tc.paymentRef, tc.callbackURL, tc.partnerName, tc.receiver, tc.amount)
-			tc.check(t, buff, err)
+			data, err := client.BusinessExpressCheckout(tc.paymentRef, tc.callbackURL, tc.partnerName, tc.receiver, tc.amount)
+			tc.check(t, data, err)
 		})
 	}
 }
