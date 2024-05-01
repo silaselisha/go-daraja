@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -16,7 +15,7 @@ func TestBusinessConsumer(t *testing.T) {
 		customerNo   string
 		qeueuTimeURL string
 		resultURL    string
-		check        func(t *testing.T, buff []byte, err error)
+		check        func(t *testing.T, data *DarajaResParams, err error)
 	}{
 		{
 			name:         "valid business consumer txn",
@@ -26,15 +25,11 @@ func TestBusinessConsumer(t *testing.T) {
 			customerNo:   "0728762287",
 			qeueuTimeURL: "https://mydomain.com/b2c/queue",
 			resultURL:    "https://mydomain.com/b2c/result",
-			check: func(t *testing.T, buff []byte, err error) {
+			check: func(t *testing.T, data *DarajaResParams, err error) {
 				require.NoError(t, err)
-				require.NotNil(t, buff)
 
-				var payload BusinessResParams
-				err = json.Unmarshal(buff, &payload)
-				require.NoError(t, err)
-				require.Equal(t, "0", payload.ResponseCode)
-				require.Equal(t, "Accept the service request successfully.", payload.ResponseDescription)
+				require.Equal(t, "0", data.ResponseCode)
+				require.Equal(t, "Accept the service request successfully.", data.ResponseDescription)
 			},
 		},
 	}
@@ -44,8 +39,8 @@ func TestBusinessConsumer(t *testing.T) {
 			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
 
-			buff, err := client.BusinessToConsumer(tc.amount, tc.txnType, tc.customerNo, tc.remarks, tc.qeueuTimeURL, tc.resultURL)
-			tc.check(t, buff, err)
+			data, err := client.BusinessToConsumer(tc.amount, tc.txnType, tc.customerNo, tc.remarks, tc.qeueuTimeURL, tc.resultURL)
+			tc.check(t, data, err)
 		})
 	}
 }

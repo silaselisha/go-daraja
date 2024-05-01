@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -20,7 +19,7 @@ func TestBusinessBuyGoods(t *testing.T) {
 		senderID        string
 		amount          float64
 		accountRefrence string
-		check           func(t *testing.T, buff []byte, err error)
+		check           func(t *testing.T, data *DarajaResParams, err error)
 	}{
 		{
 			name:            "valid business buy goods txn",
@@ -34,15 +33,11 @@ func TestBusinessBuyGoods(t *testing.T) {
 			senderID:        "4",
 			amount:          239,
 			accountRefrence: "353353",
-			check: func(t *testing.T, buff []byte, err error) {
-				require.NotEmpty(t, buff)
+			check: func(t *testing.T, data *DarajaResParams, err error) {
 				require.NoError(t, err)
 
-				var payload BusinessResParams
-				err = json.Unmarshal(buff, &payload)
-				require.NoError(t, err)
-				require.Equal(t, "0", payload.ResponseCode)
-				require.Equal(t, "Accept the service request successfully.", payload.ResponseDescription)
+				require.Equal(t, "0", data.ResponseCode)
+				require.Equal(t, "Accept the service request successfully.", data.ResponseDescription)
 			},
 		},
 	}
@@ -52,8 +47,8 @@ func TestBusinessBuyGoods(t *testing.T) {
 			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
 
-			buff, err := client.BusinessBuyGoods(tc.amount, tc.username, tc.shortCode, tc.commandID, tc.remarks, tc.resultURL, tc.qeueuTimeOutURL, tc.receiverID, tc.senderID, tc.accountRefrence)
-			tc.check(t, buff, err)
+			data, err := client.BusinessBuyGoods(tc.amount, tc.username, tc.shortCode, tc.commandID, tc.remarks, tc.resultURL, tc.qeueuTimeOutURL, tc.receiverID, tc.senderID, tc.accountRefrence)
+			tc.check(t, data, err)
 		})
 	}
 }

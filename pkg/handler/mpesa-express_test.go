@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -17,23 +15,17 @@ func TestMpesaExpress(t *testing.T) {
 		amount          float64
 		consumerKey     string
 		consumerSecret  string
-		check           func(t *testing.T, data []byte, err error)
+		check           func(t *testing.T, data *DarajaResParams, err error)
 	}{
 		{
 			name:        "valid transaction",
 			phoneNumber: "0708374149",
 			description: "test payment",
 			amount:      1,
-			check: func(t *testing.T, data []byte, err error) {
-				var payload NICallbackParams
-				require.NoError(t, err)
-				err = json.Unmarshal(data, &payload)
-				require.NoError(t, err)
-
-				require.NotEmpty(t, payload)
-				require.Equal(t, "0", payload.ResponseCode)
-				require.Equal(t, "Success. Request accepted for processing", payload.ResponseDescription)
-				require.Equal(t, "Success. Request accepted for processing", payload.CustomerMessage)
+			check: func(t *testing.T, data *DarajaResParams, err error) {
+				require.Equal(t, "0", data.ResponseCode)
+				require.Equal(t, "Success. Request accepted for processing", data.ResponseDescription)
+				require.Equal(t, "Success. Request accepted for processing", data.CustomerMessage)
 			},
 		},
 	}
@@ -45,7 +37,6 @@ func TestMpesaExpress(t *testing.T) {
 			require.NotEmpty(t, client)
 
 			payload, err := client.NIPush(tc.description, tc.phoneNumber, tc.amount)
-			fmt.Println(string(payload))
 			tc.check(t, payload, err)
 		})
 	}

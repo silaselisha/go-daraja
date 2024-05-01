@@ -21,7 +21,7 @@ type C2BReqParams struct {
 	ValidationURL   string
 }
 
-func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) ([]byte, error) {
+func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error) {
 	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/c2b/v1/registerurl")
 
 	var command string
