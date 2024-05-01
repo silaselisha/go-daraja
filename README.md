@@ -49,11 +49,11 @@ Go-daraja is an open-source project facilitating seamless integration of Safaric
             }
    
             // invoke STK/NI Push
-            buff, err := client.NIPush("test STK push", "0708374149", 1)
+            res, err := client.NIPush("test STK push", "0708374149", 1)
             if err != nil {
                 log.Panic(err)
             }
-            log.Print(string(buff))
+            log.Printf("%+v\n", res)
         }
     ```
 

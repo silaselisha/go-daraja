@@ -18,7 +18,7 @@ type BExpressCheckoutParams struct {
 	RequestRefID      string  `json:"RequestRefID"`
 }
 
-func (cl *DarajaClient) BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) ([]byte, error) {
+func (cl *DarajaClient) BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) (*DarajaResParams, error) {
 	URL := fmt.Sprintf("%s%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "/v1/ussdpush/get-msisdn")
 
 	id, err := uuid.NewRandom()

@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -14,23 +12,18 @@ func TestCustomerToBusiness(t *testing.T) {
 		responseType    b2cType
 		validationURL   string
 		confirmationURL string
-		check           func(t *testing.T, buff []byte, err error)
+		check           func(t *testing.T, data *DarajaResParams, err error)
 	}{
 		{
 			name:            "valid customer to business cancelled txn",
 			responseType:    COMPLETED,
 			validationURL:   "https://mydomain.com/validation",
 			confirmationURL: "https://mydomain.com/confirmation",
-			check: func(t *testing.T, buff []byte, err error) {
+			check: func(t *testing.T, data *DarajaResParams, err error) {
 				require.NoError(t, err)
-				require.NotEmpty(t, buff)
 
-				fmt.Println(string(buff))
-				var payload BusinessResParams
-				err = json.Unmarshal(buff, &payload)
-				require.NoError(t, err)
-				require.Equal(t, "0", payload.ResponseCode)
-				require.Equal(t, "Success", payload.ResponseDescription)
+				require.Equal(t, "0", data.ResponseCode)
+				require.Equal(t, "Success", data.ResponseDescription)
 			},
 		},
 	}

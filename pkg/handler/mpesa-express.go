@@ -30,7 +30,7 @@ type ExpressReqParams struct {
 	TransactionDesc   string
 }
 
-func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount float64) ([]byte, error) {
+func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount float64) (*DarajaResParams, error) {
 	timestamp := builder.GenTimestamp()
 	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, timestamp))
 	password := base64.URLEncoding.EncodeToString(result)

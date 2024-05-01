@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) ([]byte, error) {
+func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) (*DarajaResParams, error) {
 	buff, err := json.Marshal(&payload)
 	if err != nil {
 		return nil, err
@@ -33,5 +33,14 @@ func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqPara
 			log.Fatalf("failed to close response body %v\n", err)
 		}
 	}()
-	return io.ReadAll(res.Body)
+
+	buff, err = io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	var result DarajaResParams
+	if err := json.Unmarshal(buff, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
 }

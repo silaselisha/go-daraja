@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -15,7 +14,7 @@ func TestBusinessExpress(t *testing.T) {
 		partnerName string
 		receiver    string
 		amount      float64
-		check       func(t *testing.T, buff []byte, err error)
+		check       func(t *testing.T, data *DarajaResParams, err error)
 	}{
 		{
 			name:        "valid business express checkout",
@@ -24,9 +23,11 @@ func TestBusinessExpress(t *testing.T) {
 			partnerName: "Test",
 			receiver:    "174379",
 			amount:      10,
-			check: func(t *testing.T, buff []byte, err error) {
+			check: func(t *testing.T, data *DarajaResParams, err error) {
 				require.NoError(t, err)
-				fmt.Print(string(buff))
+
+				require.Equal(t, "0", data.ResponseBody.Code)
+				require.Equal(t, "USSD Initiated Successfully", data.ResponseBody.Status)
 			},
 		},
 	}
@@ -35,9 +36,9 @@ func TestBusinessExpress(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			client, err := NewDarajaClient("./../../example")
 			require.NoError(t, err)
-		
-			buff, err := client.BusinessExpressCheckout(tc.paymentRef, tc.callbackURL, tc.partnerName, tc.receiver, tc.amount)
-			tc.check(t, buff, err)
+
+			data, err := client.BusinessExpressCheckout(tc.paymentRef, tc.callbackURL, tc.partnerName, tc.receiver, tc.amount)
+			tc.check(t, data, err)
 		})
 	}
 }
