@@ -71,7 +71,7 @@ func TestBaseURL(t *testing.T) {
 			environment: "production",
 			check: func(t *testing.T, URL string) {
 				require.NotEmpty(t, URL)
-				require.Equal(t, "https://sandbox.safaricom.co.ke", URL)
+				require.Equal(t, "https://api.safaricom.co.ke", URL)
 			},
 		},
 		{
