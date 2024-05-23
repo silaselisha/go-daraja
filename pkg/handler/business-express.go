@@ -10,18 +10,18 @@ import (
 
 type BExpressCheckoutParams struct {
 	PrimaryShortCode  string  `json:"primaryShortCode"`
-	ReceiverShortCode string   `json:"receiverShortCode"`
+	ReceiverShortCode string  `json:"receiverShortCode"`
 	Amount            float64 `json:"amount"`
 	PaymentRef        string  `json:"paymentRef"`
 	CallbackURL       string  `json:"callbackUrl"`
 	PartnerName       string  `json:"partnerName"`
-	RequestRefID      string  `json:"RequestRefID"`
+	RequestRefID      string  `json:"requestRefId"`
 }
 
 func (cl *DarajaClient) BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) (*DarajaResParams, error) {
 	URL := fmt.Sprintf("%s%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "/v1/ussdpush/get-msisdn")
 
-	id, err := uuid.NewRandom()
+	requestRedID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
@@ -33,9 +33,9 @@ func (cl *DarajaClient) BusinessExpressCheckout(paymentRef, callbackURL, partner
 		PaymentRef:        paymentRef,
 		CallbackURL:       callbackURL,
 		PartnerName:       partnerName,
-		RequestRefID:      id.String(),
+		RequestRefID:      requestRedID.String(),
 	}
 
-	fmt.Println(payload)
+	fmt.Printf("PAYLOAD: %+v\n", payload)
 	return handlerHelper(payload, URL, http.MethodPost, cl.accessToken)
 }
