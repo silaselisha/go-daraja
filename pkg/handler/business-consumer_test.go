@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -26,6 +27,7 @@ func TestBusinessConsumer(t *testing.T) {
 			qeueuTimeURL: "https://mydomain.com/b2c/queue",
 			resultURL:    "https://mydomain.com/b2c/result",
 			check: func(t *testing.T, data *DarajaResParams, err error) {
+				fmt.Printf("Business Consumer: %+v\n", data)
 				require.NoError(t, err)
 
 				require.Equal(t, "0", data.ResponseCode)

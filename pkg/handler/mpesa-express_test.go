@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -23,6 +24,7 @@ func TestMpesaExpress(t *testing.T) {
 			description: "test payment",
 			amount:      1,
 			check: func(t *testing.T, data *DarajaResParams, err error) {
+				fmt.Printf("Mpesa Express: %+v\n", data)
 				require.Equal(t, "0", data.ResponseCode)
 				require.Equal(t, "Success. Request accepted for processing", data.ResponseDescription)
 				require.Equal(t, "Success. Request accepted for processing", data.CustomerMessage)
