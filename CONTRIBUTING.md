@@ -28,13 +28,6 @@ How to get your contributions merged smoothly and quickly.
   widely agreed-upon anti-patterns, then please do create a PR and explain the 
   benefits of the change.
 
-- Unless your PR is trivial, you should expect there will be reviewer comments
-  that you'll need to address before merging. We'll mark it as `Status: Requires
-  Reporter Clarification` if we expect you to respond to these comments in a
-  timely manner. If the PR remains inactive for 6 days, it will be marked as
-  `stale` and automatically close 7 days after that if we don't hear back from
-  you.
-
 - Maintain **clean commit history** and use **meaningful commit messages**. PRs
   with messy commit history are difficult to review and won't be merged. Fork the project
   and create a new branch to start woring on.
@@ -47,4 +40,3 @@ How to get your contributions merged smoothly and quickly.
   early on.
   - `go test --cover -v ./...` to run the tests
 
-- Exceptions to the rules can be made if there's a compelling reason for doing so.
