@@ -27,6 +27,9 @@ type DarajaResParams struct {
 		Code   string `json:"code"`
 		Status string `json:"status"`
 	}
+	RequestID    string `json:"requestId"`
+	ErrorCode    string `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
 }
 
 type DarajaErrorParams struct {
