@@ -16,7 +16,7 @@ func BaseUrlBuilder(environment string) string {
 	case "sandbox":
 		baseURL = "https://sandbox.safaricom.co.ke"
 	case "production":
-		baseURL = "https://sandbox.safaricom.co.ke"
+		baseURL = "https://api.safaricom.co.ke"
 	default:
 		baseURL = "https://sandbox.safaricom.co.ke"
 	}
