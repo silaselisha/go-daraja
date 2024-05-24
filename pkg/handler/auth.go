@@ -6,9 +6,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/silaselisha/go-daraja/internal/auth"
-	"github.com/silaselisha/go-daraja/internal/config"
-	"github.com/silaselisha/go-daraja/internal/builder"
+	"github.com/silaselisha/go-daraja/pkg/internal/auth"
+	"github.com/silaselisha/go-daraja/pkg/internal/builder"
+	"github.com/silaselisha/go-daraja/pkg/internal/config"
 )
 
 type DarajaAuth struct {
@@ -22,9 +22,9 @@ type DarajaAuth struct {
 func ClientAuth(cfgs *config.Configs) (*DarajaAuth, error) {
 	client := &http.Client{}
 
-	fmt.Println(cfgs.DarajaEnvironment)
+	fmt.Println(cfgs.MpesaEnvironment)
 
-	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cfgs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
+	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cfgs.MpesaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
 
 	req, err := http.NewRequest(http.MethodGet, URL, nil)
 	if err != nil {
