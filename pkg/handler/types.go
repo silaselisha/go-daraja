@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/silaselisha/go-daraja/internal/config"
+	"github.com/silaselisha/go-daraja/pkg/internal/config"
 )
 
 type Daraja interface {
