@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"github.com/rs/zerolog"
 	"github.com/silaselisha/go-daraja/pkg/internal/config"
+	logger "github.com/silaselisha/go-daraja/pkg/internal/log"
 )
 
 type Daraja interface {
@@ -15,6 +17,7 @@ type Daraja interface {
 type DarajaClient struct {
 	configs     *config.Configs
 	accessToken string
+	logger      zerolog.Logger
 }
 
 type DarajaResParams struct {
@@ -27,9 +30,7 @@ type DarajaResParams struct {
 		Code   string `json:"code"`
 		Status string `json:"status"`
 	}
-	RequestID    string `json:"requestId"`
-	ErrorCode    string `json:"errorCode"`
-	ErrorMessage string `json:"errorMessage"`
+	DarajaErrorParams
 }
 
 type DarajaErrorParams struct {
@@ -53,6 +54,8 @@ func NewDarajaClient(path string) (Daraja, error) {
 		return nil, err
 	}
 
+	logger := logger.DarajaLogger(configs)
+
 	auth, err := ClientAuth(configs)
 	if err != nil {
 		return nil, err
@@ -60,6 +63,7 @@ func NewDarajaClient(path string) (Daraja, error) {
 
 	return &DarajaClient{
 		configs:     configs,
+		logger:      logger,
 		accessToken: auth.AccessToken,
 	}, nil
 }

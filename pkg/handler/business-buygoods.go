@@ -47,6 +47,6 @@ func (cl *DarajaClient) BusinessBuyGoods(amount float64, username, shortCode, co
 		ResultURL:              resultURL,
 	}
 
-	data, err := handlerHelper[B2BReqParams](payload, URL, http.MethodPost, cl.accessToken)
+	data, err := handlerHelper[B2BReqParams](cl.logger, payload, URL, http.MethodPost, cl.accessToken)
 	return data, err
 }
