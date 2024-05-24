@@ -37,5 +37,5 @@ func (cl *DarajaClient) BusinessExpressCheckout(paymentRef, callbackURL, partner
 	}
 
 	fmt.Printf("PAYLOAD: %+v\n", payload)
-	return handlerHelper(payload, URL, http.MethodPost, cl.accessToken)
+	return handlerHelper(cl.logger, payload, URL, http.MethodPost, cl.accessToken)
 }

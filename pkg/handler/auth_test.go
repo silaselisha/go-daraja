@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/silaselisha/go-daraja/pkg/internal/config"
@@ -24,7 +23,6 @@ func TestAuth(t *testing.T) {
 		{
 			name: "200 OK Auth Request",
 			check: func(t *testing.T, response any, err error) {
-				fmt.Print(response)
 				res := response.(*DarajaAuth)
 				require.NotEmpty(t, res)
 				require.NoError(t, err)
