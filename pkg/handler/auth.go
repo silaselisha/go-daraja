@@ -6,9 +6,10 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/silaselisha/go-daraja/internal/auth"
-	"github.com/silaselisha/go-daraja/internal/config"
-	"github.com/silaselisha/go-daraja/internal/builder"
+	"github.com/silaselisha/go-daraja/pkg/internal/auth"
+	"github.com/silaselisha/go-daraja/pkg/internal/builder"
+	"github.com/silaselisha/go-daraja/pkg/internal/config"
+	logger "github.com/silaselisha/go-daraja/pkg/internal/log"
 )
 
 type DarajaAuth struct {
@@ -22,9 +23,8 @@ type DarajaAuth struct {
 func ClientAuth(cfgs *config.Configs) (*DarajaAuth, error) {
 	client := &http.Client{}
 
-	fmt.Println(cfgs.DarajaEnvironment)
-
-	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cfgs.DarajaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
+	logger := logger.DarajaLogger(cfgs)
+	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cfgs.MpesaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
 
 	req, err := http.NewRequest(http.MethodGet, URL, nil)
 	if err != nil {
@@ -38,6 +38,7 @@ func ClientAuth(cfgs *config.Configs) (*DarajaAuth, error) {
 	res, err := client.Do(req)
 
 	if err != nil {
+		logger.Error().Msg(err.Error())
 		return nil, err
 	}
 
@@ -45,14 +46,19 @@ func ClientAuth(cfgs *config.Configs) (*DarajaAuth, error) {
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		if err == io.EOF {
+			logger.Error().Msg(err.Error())
 			return nil, err
 		}
+		logger.Error().Msg(err.Error())
 		return nil, err
 	}
 
 	var darajaAuth *DarajaAuth
 	if err := json.Unmarshal(body, &darajaAuth); err != nil {
+		logger.Error().Msg(err.Error())
 		return nil, err
 	}
+
+	logger.Warn().Msg(string(body))
 	return darajaAuth, nil
 }
