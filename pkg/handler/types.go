@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/silaselisha/go-daraja/internal/config"
+	"github.com/silaselisha/go-daraja/pkg/internal/config"
 )
 
 type Daraja interface {
@@ -14,7 +14,7 @@ type Daraja interface {
 
 type DarajaClient struct {
 	configs     *config.Configs
-	accessToken string
+	AccessToken string
 }
 
 type DarajaResParams struct {
@@ -27,9 +27,7 @@ type DarajaResParams struct {
 		Code   string `json:"code"`
 		Status string `json:"status"`
 	}
-	RequestID    string `json:"requestId"`
-	ErrorCode    string `json:"errorCode"`
-	ErrorMessage string `json:"errorMessage"`
+	DarajaErrorParams
 }
 
 type DarajaErrorParams struct {
@@ -60,6 +58,6 @@ func NewDarajaClient(path string) (Daraja, error) {
 
 	return &DarajaClient{
 		configs:     configs,
-		accessToken: auth.AccessToken,
+		AccessToken: auth.AccessToken,
 	}, nil
 }

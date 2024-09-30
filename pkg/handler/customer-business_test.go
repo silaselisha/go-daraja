@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -21,7 +20,6 @@ func TestCustomerToBusiness(t *testing.T) {
 			validationURL:   "https://mydomain.com/validation",
 			confirmationURL: "https://mydomain.com/confirmation",
 			check: func(t *testing.T, data *DarajaResParams, err error) {
-				fmt.Printf("Consumer Business: %+v\n", data)
 				require.NoError(t, err)
 
 				if data.ErrorCode == "500.003.1001" {
