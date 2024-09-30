@@ -3,7 +3,6 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -40,7 +39,6 @@ func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqPara
 		return nil, err
 	}
 
-	fmt.Printf("Bytes From Helper: %+v\n", string(buff))
 	var result DarajaResParams
 	if err := json.Unmarshal(buff, &result); err != nil {
 		return nil, err
