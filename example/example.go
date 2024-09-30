@@ -1,4 +1,4 @@
-package example
+package main
 
 import (
 	"encoding/json"
@@ -6,42 +6,13 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/silaselisha/go-daraja/pkg/handler"
 )
 
-type Duka struct {
-	PhoneNumber string `json:"phoneNumber"`
-	Description string `json:"description"`
-	Amount      string `json:"amount"`
-}
-
 func dukaHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method == http.MethodPost {
-		data, err := io.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(err.Error()))
-			return
-		}
-
-		duka := new(Duka)
-		err = json.Unmarshal(data, duka)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(err.Error()))
-			return
-		}
-
-		amount, err := strconv.ParseFloat(duka.Amount, 64)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
-
 		darajaClient, err := handler.NewDarajaClient("./..")
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -49,7 +20,7 @@ func dukaHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		res, err := darajaClient.NIPush(duka.Description, duka.PhoneNumber, amount)
+		res, err := darajaClient.NIPush("test", "0792918261", 1)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
@@ -70,14 +41,25 @@ func dukaHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-
 		w.WriteHeader(http.StatusNotImplemented)
 		w.Write([]byte(fmt.Sprintf("%+v method not implemented\n", r.Method)))
 	}
 }
 
-func Server() {
+func checkoutHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("headers: ", r.Header)
+	d, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%+v\n", string(d))
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(fmt.Sprint(r.Body)))
+}
+
+func main() {
 	http.HandleFunc("/api/v1/duka", dukaHandler)
+	http.HandleFunc("/api/v1/checkout", checkoutHandler)
 
 	fmt.Printf("server starting...\n")
 	fmt.Print("http://localhost:8080")

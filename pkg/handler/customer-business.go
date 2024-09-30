@@ -41,5 +41,5 @@ func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string
 		ValidationURL:   validationURL,
 	}
 
-	return handlerHelper[C2BReqParams](payload, URL, http.MethodPost, cl.accessToken)
+	return handlerHelper[C2BReqParams](payload, URL, http.MethodPost, cl.AccessToken)
 }

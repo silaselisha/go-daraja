@@ -20,7 +20,7 @@ func TestMpesaExpress(t *testing.T) {
 	}{
 		{
 			name:        "valid transaction",
-			phoneNumber: "0708374149",
+			phoneNumber: "0792918261",
 			description: "test payment",
 			amount:      1,
 			check: func(t *testing.T, data *DarajaResParams, err error) {
