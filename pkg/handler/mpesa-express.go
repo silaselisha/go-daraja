@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/silaselisha/go-daraja/internal/builder"
+	"github.com/silaselisha/go-daraja/pkg/internal/builder"
 )
 
 type NICallbackParams struct {
@@ -54,7 +54,7 @@ func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount fl
 		TransactionDesc:   description,
 	}
 
-	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.DarajaEnvironment), "mpesa/stkpush/v1/processrequest")
+	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/stkpush/v1/processrequest")
 
 	return handlerHelper[ExpressReqParams](payload, URL, http.MethodPost, cl.AccessToken)
 }
