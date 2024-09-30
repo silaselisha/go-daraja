@@ -55,6 +55,5 @@ func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount fl
 	}
 
 	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/stkpush/v1/processrequest")
-
-	return handlerHelper[ExpressReqParams](payload, URL, http.MethodPost, cl.AccessToken)
+	return handlerHelper(payload, URL, http.MethodPost, cl.AccessToken)
 }
