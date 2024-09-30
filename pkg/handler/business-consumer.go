@@ -72,5 +72,5 @@ func (cl *DarajaClient) BusinessToConsumer(amount float64, txnType txnType, cust
 		SecurityCredential:       securityCred,
 	}
 
-	return handlerHelper[B2CReqParams](payload, URL, http.MethodPost, cl.accessToken)
+	return handlerHelper[B2CReqParams](payload, URL, http.MethodPost, cl.AccessToken)
 }

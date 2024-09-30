@@ -14,7 +14,7 @@ type Daraja interface {
 
 type DarajaClient struct {
 	configs     *config.Configs
-	accessToken string
+	AccessToken string
 }
 
 type DarajaResParams struct {
@@ -60,6 +60,6 @@ func NewDarajaClient(path string) (Daraja, error) {
 
 	return &DarajaClient{
 		configs:     configs,
-		accessToken: auth.AccessToken,
+		AccessToken: auth.AccessToken,
 	}, nil
 }
