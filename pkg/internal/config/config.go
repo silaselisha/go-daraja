@@ -5,7 +5,7 @@ import (
 )
 
 type Configs struct {
-	DarajaEnvironment                      string `mapstructure:"DARAJA_ENVIRONMENT"`
+	MpesaEnvironment                      string `mapstructure:"MPESA_ENVIRONMENT"`
 	DarajaConsumerKey                      string `mapstructure:"DARAJA_CONSUMER_KEY"`
 	DarajaConsumerSecret                   string `mapstructure:"DARAJA_CONSUMER_SECRET"`
 	DarajaBusinessShortCode                string `mapstructure:"DARAJA_BUSINESS_SHORT_CODE"`

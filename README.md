@@ -32,7 +32,7 @@ Go-daraja is an open-source project facilitating seamless integration of Safaric
 3. Install go-daraja package
 
     ```go
-       go "get github.com/silaselisha/go-daraja"
+       go get "github.com/silaselisha/go-daraja"
     ```
 
     ``` go

@@ -10,13 +10,13 @@ import (
 	"os"
 	"path"
 
-	"github.com/silaselisha/go-daraja/internal/config"
+	"github.com/silaselisha/go-daraja/pkg/internal/config"
 )
 
 func GenSecurityCred(config *config.Configs, filePath string) (string, error) {
 	passwordBuff := []byte(config.DarajaInitiatorPassword)
 	fileName := "sandbox"
-	if config.DarajaEnvironment == "production" {
+	if config.MpesaEnvironment == "production" {
 		fileName = "production"
 	}
 
