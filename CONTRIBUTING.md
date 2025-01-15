@@ -4,8 +4,8 @@ We definitely welcome your patches and contributions to go-daraja! Please read t
 
 If you are new to github, please start by reading [Pull Request howto](https://help.github.com/articles/about-pull-requests/)
 
-
 ## Guidelines for Pull Requests
+
 How to get your contributions merged smoothly and quickly.
 
 - Create **small PRs** that are narrowly focused on **addressing a single
@@ -39,4 +39,3 @@ How to get your contributions merged smoothly and quickly.
   recommend you **run tests locally** before creating your PR to catch breakages
   early on.
   - `go test --cover -v ./...` to run the tests
-
