@@ -25,7 +25,7 @@ func TestCustomerToBusiness(t *testing.T) {
 				if data.ErrorCode == "500.003.1001" {
 					require.Equal(t, "Service is currently unreachable. Please try again later.", data.ErrorMessage)
 				} else {
-					require.Equal(t, "0", data.ResponseCode)
+					require.Equal(t, "00000000", data.ResponseCode)
 					require.Equal(t, "Success", data.ResponseDescription)
 				}
 			},
