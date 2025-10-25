@@ -1,6 +1,7 @@
 package handler
 
 import (
+    "context"
     "encoding/base64"
     "fmt"
     "net/http"
@@ -31,6 +32,10 @@ type ExpressReqParams struct {
 }
 
 func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount float64) (*DarajaResParams, error) {
+    return cl.NIPushCtx(context.Background(), description, phoneNumber, amount)
+}
+
+func (cl *DarajaClient) NIPushCtx(ctx context.Context, description string, phoneNumber string, amount float64) (*DarajaResParams, error) {
 	timestamp := builder.GenTimestamp()
 	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, timestamp))
     // Per Daraja docs, use standard Base64 encoding
@@ -55,6 +60,6 @@ func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount fl
 		TransactionDesc:   description,
 	}
 
-	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/stkpush/v1/processrequest")
-	return handlerHelper(payload, URL, http.MethodPost, cl.AccessToken)
+    URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/stkpush/v1/processrequest")
+    return handlerHelperCtx(cl, ctx, payload, URL, http.MethodPost, cl.AccessToken)
 }

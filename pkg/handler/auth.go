@@ -1,10 +1,12 @@
 package handler
 
 import (
+    "context"
     "encoding/json"
     "fmt"
     "io"
     "net/http"
+    "time"
 
     "github.com/silaselisha/go-daraja/pkg/internal/auth"
     "github.com/silaselisha/go-daraja/pkg/internal/builder"
@@ -20,10 +22,16 @@ type DarajaAuth struct {
 }
 
 func ClientAuth(cfgs *config.Configs) (*DarajaAuth, error) {
-    client := &http.Client{}
+    // Backward-compatible wrapper with default timeout
+    client := &http.Client{Timeout: 15 * time.Second}
+    return ClientAuthWithClient(context.Background(), cfgs, client)
+}
+
+// ClientAuthWithClient performs token acquisition using the provided context and HTTP client.
+func ClientAuthWithClient(ctx context.Context, cfgs *config.Configs, client *http.Client) (*DarajaAuth, error) {
     URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cfgs.MpesaEnvironment), "oauth/v1/generate?grant_type=client_credentials")
 
-    req, err := http.NewRequest(http.MethodGet, URL, nil)
+    req, err := http.NewRequestWithContext(ctx, http.MethodGet, URL, nil)
     if err != nil {
         return nil, err
     }
@@ -35,20 +43,14 @@ func ClientAuth(cfgs *config.Configs) (*DarajaAuth, error) {
     req.Header.Set("Authorization", "Basic "+authToken)
     res, err := client.Do(req)
     if err != nil {
-        // Network issue: return structured unreachable error without failing construction
-        return &DarajaAuth{
-            ErrorCode:    "500.003.1001",
-            ErrorMessage: "Service is currently unreachable. Please try again later.",
-        }, nil
+        // Backward compatibility: do not fail construction on network error
+        return &DarajaAuth{ErrorCode: "500.003.1001", ErrorMessage: "Service is currently unreachable. Please try again later."}, nil
     }
 
     defer res.Body.Close()
     body, err := io.ReadAll(res.Body)
     if err != nil {
-        return &DarajaAuth{
-            ErrorCode:    "500.003.1001",
-            ErrorMessage: "Service is currently unreachable. Please try again later.",
-        }, nil
+        return &DarajaAuth{ErrorCode: "500.003.1001", ErrorMessage: "Service is currently unreachable. Please try again later."}, nil
     }
 
     var tokenRes DarajaAuth
@@ -63,16 +65,9 @@ func ClientAuth(cfgs *config.Configs) (*DarajaAuth, error) {
         ErrorMessage string `json:"errorMessage"`
     }
     if err := json.Unmarshal(body, &errShape); err == nil && (errShape.ErrorCode != "" || errShape.ErrorMessage != "") {
-        return &DarajaAuth{
-            RequestID:    errShape.RequestID,
-            ErrorCode:    errShape.ErrorCode,
-            ErrorMessage: errShape.ErrorMessage,
-        }, nil
+        return &DarajaAuth{RequestID: errShape.RequestID, ErrorCode: errShape.ErrorCode, ErrorMessage: errShape.ErrorMessage}, nil
     }
 
     // Fallback for non-JSON responses (e.g., HTML)
-    return &DarajaAuth{
-        ErrorCode:    "500.003.1001",
-        ErrorMessage: "Service is currently unreachable. Please try again later.",
-    }, nil
+    return &DarajaAuth{ErrorCode: "500.003.1001", ErrorMessage: "Service is currently unreachable. Please try again later."}, nil
 }

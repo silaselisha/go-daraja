@@ -1,6 +1,7 @@
 package handler
 
 import (
+    "context"
     "fmt"
     "net/http"
 
@@ -31,11 +32,16 @@ type B2CReqParams struct {
 }
 
 func (cl *DarajaClient) BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, qeueuTimeOutURL, resultURL string) (*DarajaResParams, error) {
+    return cl.BusinessToConsumerCtx(context.Background(), amount, txnType, customerNo, remarks, qeueuTimeOutURL, resultURL)
+}
+
+func (cl *DarajaClient) BusinessToConsumerCtx(ctx context.Context, amount float64, txnType txnType, customerNo, remarks, qeueuTimeOutURL, resultURL string) (*DarajaResParams, error) {
     URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/b2c/v1/paymentrequest")
 
     // OriginatorConversationID is optional for v1; include when available to align with docs
     // We can reuse the SecurityCredential entropy to derive a pseudo-unique ID if none
-    securityCred, err := x509.GenSecurityCred(cl.configs, "./../internal/x509")
+    // Use embedded certs by default
+    securityCred, err := x509.GenSecurityCred(cl.configs, "")
     if err != nil {
         return nil, err
     }
@@ -68,5 +74,5 @@ func (cl *DarajaClient) BusinessToConsumer(amount float64, txnType txnType, cust
         SecurityCredential: securityCred,
     }
 
-    return handlerHelper(payload, URL, http.MethodPost, cl.AccessToken)
+    return handlerHelperCtx(cl, ctx, payload, URL, http.MethodPost, cl.AccessToken)
 }

@@ -1,18 +1,24 @@
 package x509
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/base64"
-	"encoding/pem"
-	"fmt"
-	"os"
-	"path"
+    "crypto/rand"
+    "crypto/rsa"
+    "crypto/x509"
+    "embed"
+    "encoding/base64"
+    "encoding/pem"
+    "io/fs"
+    "os"
+    "path"
 
-	"github.com/silaselisha/go-daraja/pkg/internal/config"
+    "github.com/silaselisha/go-daraja/pkg/internal/config"
 )
 
+//go:embed cert/*.cer
+var embeddedCerts embed.FS
+
+// GenSecurityCred generates the security credential using either embedded certs or a provided filesystem path.
+// If filePath is empty, embedded certificates are used.
 func GenSecurityCred(config *config.Configs, filePath string) (string, error) {
 	passwordBuff := []byte(config.DarajaInitiatorPassword)
 	fileName := "sandbox"
@@ -20,13 +26,20 @@ func GenSecurityCred(config *config.Configs, filePath string) (string, error) {
 		fileName = "production"
 	}
 
-	file := path.Join(filePath, "cert", fileName+".cer")
-	fmt.Println(file)
-	buff, err := os.ReadFile(file)
-	if err != nil {
-		fmt.Println(err)
-		return "", err
-	}
+    var (
+        buff []byte
+        err  error
+    )
+    if filePath == "" {
+        // Prefer embedded certificate assets
+        buff, err = fs.ReadFile(embeddedCerts, path.Join("cert", fileName+".cer"))
+    } else {
+        file := path.Join(filePath, "cert", fileName+".cer")
+        buff, err = os.ReadFile(file)
+    }
+    if err != nil {
+        return "", err
+    }
 
 	// define a cert block
 	certBlock, _ := pem.Decode(buff)
@@ -43,7 +56,6 @@ func GenSecurityCred(config *config.Configs, filePath string) (string, error) {
 		return "", err
 	}
 
-	securityCred := base64.StdEncoding.EncodeToString(cipherText)
-	fmt.Println(string(securityCred))
-	return string(securityCred), nil
+    securityCred := base64.StdEncoding.EncodeToString(cipherText)
+    return string(securityCred), nil
 }
