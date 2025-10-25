@@ -20,13 +20,20 @@ func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqPara
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/json")
+    req.Header.Set("Content-Type", "application/json")
+    req.Header.Set("Accept", "application/json")
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
-	client := &http.Client{}
-	res, err := client.Do(req)
+    client := &http.Client{}
+    res, err := client.Do(req)
 	if err != nil {
-		return nil, err
+        // Network issues: return standardized unreachable error in structure
+        return &DarajaResParams{
+            DarajaErrorParams: DarajaErrorParams{
+                ErrorCode:    "500.003.1001",
+                ErrorMessage: "Service is currently unreachable. Please try again later.",
+            },
+        }, nil
 	}
 
 	defer func() {
