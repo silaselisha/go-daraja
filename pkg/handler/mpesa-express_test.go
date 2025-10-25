@@ -23,12 +23,17 @@ func TestMpesaExpress(t *testing.T) {
 			phoneNumber: "0708374149",
 			description: "test payment",
 			amount:      1,
-			check: func(t *testing.T, data *DarajaResParams, err error) {
-				fmt.Printf("Mpesa Express: %+v\n", data)
-				require.Equal(t, "0", data.ResponseCode)
-				require.Equal(t, "Success. Request accepted for processing", data.ResponseDescription)
-				require.Equal(t, "Success. Request accepted for processing", data.CustomerMessage)
-			},
+            check: func(t *testing.T, data *DarajaResParams, err error) {
+                fmt.Printf("Mpesa Express: %+v\n", data)
+                require.NoError(t, err)
+                if data.ErrorCode == "500.003.1001" || data.ErrorMessage == "Service is currently unreachable. Please try again later." {
+                    require.Equal(t, "Service is currently unreachable. Please try again later.", data.ErrorMessage)
+                    return
+                }
+                require.Equal(t, "0", data.ResponseCode)
+                require.Equal(t, "Success. Request accepted for processing", data.ResponseDescription)
+                require.Equal(t, "Success. Request accepted for processing", data.CustomerMessage)
+            },
 		},
 	}
 
