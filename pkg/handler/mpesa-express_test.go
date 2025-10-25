@@ -26,7 +26,7 @@ func TestMpesaExpress(t *testing.T) {
             check: func(t *testing.T, data *DarajaResParams, err error) {
                 fmt.Printf("Mpesa Express: %+v\n", data)
                 require.NoError(t, err)
-                if data.ErrorCode == "500.003.1001" {
+                if data.ErrorCode == "500.003.1001" || data.ErrorMessage == "Service is currently unreachable. Please try again later." {
                     require.Equal(t, "Service is currently unreachable. Please try again later.", data.ErrorMessage)
                     return
                 }
