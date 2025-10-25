@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"fmt"
-	"net/http"
+    "context"
+    "fmt"
+    "net/http"
 
-	"github.com/silaselisha/go-daraja/pkg/internal/builder"
+    "github.com/silaselisha/go-daraja/pkg/internal/builder"
 )
 
 type b2cType int
@@ -22,6 +23,10 @@ type C2BReqParams struct {
 }
 
 func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error) {
+    return cl.CustomerToBusinessCtx(context.Background(), confirmationURL, validationURL, responseType)
+}
+
+func (cl *DarajaClient) CustomerToBusinessCtx(ctx context.Context, confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error) {
     URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/c2b/v1/registerurl")
 
 	var command string
@@ -40,5 +45,5 @@ func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string
 		ValidationURL:   validationURL,
 	}
 
-	return handlerHelper(payload, URL, http.MethodPost, cl.AccessToken)
+    return handlerHelperCtx(cl, ctx, payload, URL, http.MethodPost, cl.AccessToken)
 }
