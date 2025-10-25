@@ -17,6 +17,7 @@ const (
 )
 
 type B2CReqParams struct {
+    OriginatorConversationID string  `json:"OriginatorConversationID,omitempty"`
     InitiatorName      string  `json:"InitiatorName"`
     SecurityCredential string  `json:"SecurityCredential"`
     CommandID          string  `json:"CommandID"`
@@ -32,6 +33,8 @@ type B2CReqParams struct {
 func (cl *DarajaClient) BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, qeueuTimeOutURL, resultURL string) (*DarajaResParams, error) {
     URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/b2c/v1/paymentrequest")
 
+    // OriginatorConversationID is optional for v1; include when available to align with docs
+    // We can reuse the SecurityCredential entropy to derive a pseudo-unique ID if none
     securityCred, err := x509.GenSecurityCred(cl.configs, "./../internal/x509")
     if err != nil {
         return nil, err
