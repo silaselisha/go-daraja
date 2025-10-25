@@ -2,6 +2,7 @@ package handler
 
 import (
     "bytes"
+    "context"
     "encoding/json"
     "fmt"
     "io"
@@ -9,13 +10,13 @@ import (
     "net/http"
 )
 
-func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) (*DarajaResParams, error) {
+func (cl *DarajaClient) handlerHelperCtx[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](ctx context.Context, payload T, url, method, authToken string) (*DarajaResParams, error) {
 	buff, err := json.Marshal(&payload)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(buff))
+    req, err := http.NewRequestWithContext(ctx, method, url, bytes.NewBuffer(buff))
 	if err != nil {
 		return nil, err
 	}
@@ -24,17 +25,14 @@ func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqPara
     req.Header.Set("Accept", "application/json")
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
-    client := &http.Client{}
+    client := cl.httpClient
+    if client == nil {
+        client = &http.Client{}
+    }
     res, err := client.Do(req)
-	if err != nil {
-        // Network issues: return standardized unreachable error in structure
-        return &DarajaResParams{
-            DarajaErrorParams: DarajaErrorParams{
-                ErrorCode:    "500.003.1001",
-                ErrorMessage: "Service is currently unreachable. Please try again later.",
-            },
-        }, nil
-	}
+    if err != nil {
+        return nil, &APIError{Code: "500.003.1001", Message: "Service is currently unreachable. Please try again later.", Op: "request"}
+    }
 
 	defer func() {
 		if err := res.Body.Close(); err != nil {
@@ -88,19 +86,15 @@ func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqPara
     var errPayload DarajaErrorParams
     if err := json.Unmarshal(buff, &errPayload); err == nil {
         result.DarajaErrorParams = errPayload
-        return &result, nil
+        return &result, &APIError{Code: errPayload.ErrorCode, Message: errPayload.ErrorMessage, RawBody: buff, Op: "decode"}
     }
 
     // Fallback: non-JSON (e.g., HTML error page). Map to a generic unreachable error
-    result.ErrorCode = "500.003.1001"
-    result.ErrorMessage = "Service is currently unreachable. Please try again later."
-    // include a hint with truncated payload for debugging
-    if len(buff) > 0 {
-        preview := buff
-        if len(preview) > 128 {
-            preview = preview[:128]
-        }
-        _ = fmt.Sprintf("non-JSON response preview: %s", string(preview))
-    }
-    return &result, nil
+    return nil, &APIError{Code: "500.003.1001", Message: "Service is currently unreachable. Please try again later.", RawBody: buff, Op: "decode"}
+}
+
+// Backward-compatible helper without context
+func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) (*DarajaResParams, error) {
+    cl := &DarajaClient{}
+    return cl.handlerHelperCtx(context.Background(), payload, url, method, authToken)
 }

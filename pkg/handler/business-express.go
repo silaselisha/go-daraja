@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"fmt"
-	"net/http"
+    "context"
+    "fmt"
+    "net/http"
 
-	"github.com/google/uuid"
-	"github.com/silaselisha/go-daraja/pkg/internal/builder"
+    "github.com/google/uuid"
+    "github.com/silaselisha/go-daraja/pkg/internal/builder"
 )
 
 type BExpressCheckoutParams struct {
@@ -19,6 +20,10 @@ type BExpressCheckoutParams struct {
 }
 
 func (cl *DarajaClient) BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) (*DarajaResParams, error) {
+    return cl.BusinessExpressCheckoutCtx(context.Background(), paymentRef, callbackURL, partnerName, receiver, amount)
+}
+
+func (cl *DarajaClient) BusinessExpressCheckoutCtx(ctx context.Context, paymentRef, callbackURL, partnerName, receiver string, amount float64) (*DarajaResParams, error) {
     // Per Daraja Business Express docs
     URL := fmt.Sprintf("%s%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "/v1/ussdpush/get-msisdn")
 
@@ -37,6 +42,5 @@ func (cl *DarajaClient) BusinessExpressCheckout(paymentRef, callbackURL, partner
 		RequestRefID:      requestRedID.String(),
 	}
 
-	fmt.Printf("PAYLOAD: %+v\n", payload)
-	return handlerHelper(payload, URL, http.MethodPost, cl.AccessToken)
+    return cl.handlerHelperCtx(ctx, payload, URL, http.MethodPost, cl.AccessToken)
 }
