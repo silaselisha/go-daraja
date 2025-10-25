@@ -29,8 +29,7 @@ func (cl *DarajaClient) BusinessBuyGoods(amount float64, username, shortCode, co
     return cl.BusinessBuyGoodsCtx(context.Background(), amount, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference)
 }
 
-func (cl *DarajaClient) BusinessBuyGoodsCtx(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) (*DarajaResParams, error) {
-    ctx := context.Background()
+func (cl *DarajaClient) BusinessBuyGoodsCtx(ctx context.Context, amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) (*DarajaResParams, error) {
     URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/b2b/v1/paymentrequest")
 
     // Use embedded certs by passing empty path; allow override later via options if needed
@@ -54,6 +53,6 @@ func (cl *DarajaClient) BusinessBuyGoodsCtx(amount float64, username, shortCode,
 		ResultURL:              resultURL,
 	}
 
-    data, err := cl.handlerHelperCtx(ctx, payload, URL, http.MethodPost, cl.AccessToken)
+    data, err := handlerHelperCtx(cl, ctx, payload, URL, http.MethodPost, cl.AccessToken)
 	return data, err
 }
