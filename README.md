@@ -46,7 +46,65 @@ Go-daraja is an open-source project facilitating seamless integration of Safaric
 
 ## Usage Example
 
-A sample implementation of MPESA STK push intergartion in a go project
+### Quick start (env-based)
+
+Set the required environment variables (12-factor friendly). `.env` is optional.
+
+Required for auth: `DARAJA_CONSUMER_KEY`, `DARAJA_CONSUMER_SECRET`. Common values:
+
+```bash
+export MPESA_ENVIRONMENT=sandbox
+export DARAJA_CONSUMER_KEY=your_key
+export DARAJA_CONSUMER_SECRET=your_secret
+export DARAJA_BUSINESS_SHORT_CODE=174379
+export DARAJA_PASS_KEY=your_pass_key
+export DARAJA_CALL_BACK_URL=https://your.app/callback
+export DARAJA_ACCOUNT_REF=YourApp
+```
+
+```go
+import (
+    "log"
+    daraja "github.com/silaselisha/go-daraja/pkg/handler"
+)
+
+func main() {
+    // New option-based constructor; loads OS env and optional .env automatically
+    client, err := daraja.NewClient()
+    if err != nil {
+        log.Panic(err)
+    }
+
+    res, err := client.NIPush("test STK push", "0708374149", 1)
+    if err != nil {
+        log.Panic(err)
+    }
+    log.Printf("%+v\n", res)
+}
+```
+
+### Backward-compatible constructor
+
+The original constructor remains available and now treats `.env` as optional:
+
+```go
+client, err := daraja.NewDarajaClient(".") // looks for .env in current dir, also reads OS env
+```
+
+### Advanced: provide custom HTTP client or config
+
+```go
+httpClient := &http.Client{Timeout: 20 * time.Second}
+client, err := daraja.NewClient(
+    daraja.WithHTTPClient(httpClient),
+    // daraja.WithEnvFile("./configs"),
+    // daraja.WithConfig(daraja.Configs{ /* explicit values */ }),
+)
+```
+
+### Usage Example
+
+A sample implementation of MPESA STK push integration in a Go project
 
 ```go
     import (
