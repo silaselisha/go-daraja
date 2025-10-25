@@ -43,13 +43,14 @@ func ClientAuthWithClient(ctx context.Context, cfgs *config.Configs, client *htt
     req.Header.Set("Authorization", "Basic "+authToken)
     res, err := client.Do(req)
     if err != nil {
-        return nil, &APIError{Code: "500.003.1001", Message: "Service is currently unreachable. Please try again later.", Op: "auth"}
+        // Backward compatibility: do not fail construction on network error
+        return &DarajaAuth{ErrorCode: "500.003.1001", ErrorMessage: "Service is currently unreachable. Please try again later."}, nil
     }
 
     defer res.Body.Close()
     body, err := io.ReadAll(res.Body)
     if err != nil {
-        return nil, &APIError{Code: "500.003.1001", Message: "Service is currently unreachable. Please try again later.", Op: "auth-read"}
+        return &DarajaAuth{ErrorCode: "500.003.1001", ErrorMessage: "Service is currently unreachable. Please try again later."}, nil
     }
 
     var tokenRes DarajaAuth
@@ -64,9 +65,9 @@ func ClientAuthWithClient(ctx context.Context, cfgs *config.Configs, client *htt
         ErrorMessage string `json:"errorMessage"`
     }
     if err := json.Unmarshal(body, &errShape); err == nil && (errShape.ErrorCode != "" || errShape.ErrorMessage != "") {
-        return nil, &APIError{Code: errShape.ErrorCode, Message: errShape.ErrorMessage, Op: "auth-decode"}
+        return &DarajaAuth{RequestID: errShape.RequestID, ErrorCode: errShape.ErrorCode, ErrorMessage: errShape.ErrorMessage}, nil
     }
 
     // Fallback for non-JSON responses (e.g., HTML)
-    return nil, &APIError{Code: "500.003.1001", Message: "Service is currently unreachable. Please try again later.", Op: "auth-decode"}
+    return &DarajaAuth{ErrorCode: "500.003.1001", ErrorMessage: "Service is currently unreachable. Please try again later."}, nil
 }

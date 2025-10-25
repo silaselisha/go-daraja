@@ -42,5 +42,5 @@ func (cl *DarajaClient) BusinessExpressCheckoutCtx(ctx context.Context, paymentR
 		RequestRefID:      requestRedID.String(),
 	}
 
-    return cl.handlerHelperCtx(ctx, payload, URL, http.MethodPost, cl.AccessToken)
+    return handlerHelperCtx(cl, ctx, payload, URL, http.MethodPost, cl.AccessToken)
 }

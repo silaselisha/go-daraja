@@ -7,7 +7,6 @@ import (
     "embed"
     "encoding/base64"
     "encoding/pem"
-    "fmt"
     "io/fs"
     "os"
     "path"

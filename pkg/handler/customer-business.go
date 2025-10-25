@@ -45,5 +45,5 @@ func (cl *DarajaClient) CustomerToBusinessCtx(ctx context.Context, confirmationU
 		ValidationURL:   validationURL,
 	}
 
-    return cl.handlerHelperCtx(ctx, payload, URL, http.MethodPost, cl.AccessToken)
+    return handlerHelperCtx(cl, ctx, payload, URL, http.MethodPost, cl.AccessToken)
 }
