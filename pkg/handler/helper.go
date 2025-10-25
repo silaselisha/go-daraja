@@ -49,7 +49,39 @@ func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqPara
 
     var result DarajaResParams
     if err := json.Unmarshal(buff, &result); err == nil {
-        return &result, nil
+        // If we successfully parsed but key fields are empty, try alternate shapes
+        if result.ResponseCode == "" && result.ErrorCode == "" {
+            // Attempt to parse B2C callback/result envelope
+            type b2cResultEnvelope struct {
+                Result struct {
+                    ResultType                 int    `json:"ResultType"`
+                    ResultCode                 int    `json:"ResultCode"`
+                    ResultDesc                 string `json:"ResultDesc"`
+                    OriginatorConversationID   string `json:"OriginatorConversationID"`
+                    ConversationID             string `json:"ConversationID"`
+                } `json:"Result"`
+            }
+            var env b2cResultEnvelope
+            if err := json.Unmarshal(buff, &env); err == nil && (env.Result.ResultDesc != "" || env.Result.ResultCode != 0) {
+                // Map to our common response shape per docs
+                if env.Result.ResultCode == 0 {
+                    result.ResponseCode = "0"
+                } else {
+                    result.ResponseCode = fmt.Sprintf("%d", env.Result.ResultCode)
+                }
+                // Prefer the documented ack phrase when unknown
+                if env.Result.ResultDesc != "" {
+                    result.ResponseDescription = env.Result.ResultDesc
+                } else if result.ResponseDescription == "" {
+                    result.ResponseDescription = "Accept the service request successfully."
+                }
+                result.OriginatorConversationID = env.Result.OriginatorConversationID
+                result.ConversationID = env.Result.ConversationID
+                return &result, nil
+            }
+        } else {
+            return &result, nil
+        }
     }
 
     // If the standard response shape failed to parse, try parsing known error fields
