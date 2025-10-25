@@ -15,25 +15,24 @@ const (
 )
 
 type C2BReqParams struct {
-	ShortCode       string
-	ResponseType    string
-	ConfirmationURL string
-	ValidationURL   string
+    ShortCode       string `json:"ShortCode"`
+    ResponseType    string `json:"ResponseType"`
+    ConfirmationURL string `json:"ConfirmationURL"`
+    ValidationURL   string `json:"ValidationURL"`
 }
 
 func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error) {
-	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/c2b/v1/registerurl")
+    URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/c2b/v1/registerurl")
 
 	var command string
-	switch {
-	case responseType == 0:
-		command = "CANCELLED"
-	case responseType == 1:
-		command = "COMPLETED"
-
-	default:
-		command = "CANCELLED"
-	}
+    switch responseType {
+    case CANCELLED:
+        command = "Cancelled"
+    case COMPLETED:
+        command = "Completed"
+    default:
+        command = "Cancelled"
+    }
 	payload := C2BReqParams{
 		ShortCode:       cl.configs.DarajaBusinessShortCode,
 		ResponseType:    command,
