@@ -74,5 +74,5 @@ func (cl *DarajaClient) BusinessToConsumerCtx(ctx context.Context, amount float6
         SecurityCredential: securityCred,
     }
 
-    return cl.handlerHelperCtx(ctx, payload, URL, http.MethodPost, cl.AccessToken)
+    return handlerHelperCtx(cl, ctx, payload, URL, http.MethodPost, cl.AccessToken)
 }
