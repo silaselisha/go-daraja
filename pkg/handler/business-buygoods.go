@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"fmt"
-	"net/http"
+    "context"
+    "fmt"
+    "net/http"
 
-	"github.com/silaselisha/go-daraja/pkg/internal/x509"
-	"github.com/silaselisha/go-daraja/pkg/internal/builder"
+    "github.com/silaselisha/go-daraja/pkg/internal/x509"
+    "github.com/silaselisha/go-daraja/pkg/internal/builder"
 )
 
 type B2BReqParams struct {
@@ -25,9 +26,14 @@ type B2BReqParams struct {
 }
 
 func (cl *DarajaClient) BusinessBuyGoods(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) (*DarajaResParams, error) {
-	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/b2b/v1/paymentrequest")
+    return cl.BusinessBuyGoodsCtx(context.Background(), amount, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference)
+}
 
-	securityCred, err := x509.GenSecurityCred(cl.configs, "./../internal/x509")
+func (cl *DarajaClient) BusinessBuyGoodsCtx(ctx context.Context, amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) (*DarajaResParams, error) {
+    URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/b2b/v1/paymentrequest")
+
+    // Use embedded certs by passing empty path; allow override later via options if needed
+    securityCred, err := x509.GenSecurityCred(cl.configs, "")
 	if err != nil {
 		return nil, err
 	}
@@ -47,6 +53,6 @@ func (cl *DarajaClient) BusinessBuyGoods(amount float64, username, shortCode, co
 		ResultURL:              resultURL,
 	}
 
-	data, err := handlerHelper(payload, URL, http.MethodPost, cl.AccessToken)
+    data, err := handlerHelperCtx(cl, ctx, payload, URL, http.MethodPost, cl.AccessToken)
 	return data, err
 }

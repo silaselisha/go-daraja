@@ -1,17 +1,33 @@
-# Welcome to MkDocs
+# Go Daraja (M‑Pesa) Client
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+A lightweight, idiomatic Go client for Safaricom's Daraja (M‑Pesa) APIs. Clean configuration, safe defaults, and a consistent API for core payment flows.
 
-## Commands
+![](assets/images/godarajamascott.png){ width=120 }
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+## Highlights
 
-## Project layout
+- Simple, composable client construction with functional options
+- Context-aware APIs for cancellation and timeouts
+- Embedded X.509 certs and typed error model
+- Covers STK Push, B2C, C2B, B2B and Business Express
+- 12‑factor configuration from environment (optional `.env`)
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+## Quick links
+
+- Getting started: [Installation](getting-started/installation.md) · [Quickstart](getting-started/quickstart.md)
+- Usage guides: [STK Push](usage/ni-push.md), [B2C](usage/b2c.md), [C2B](usage/c2b.md), [B2B](usage/b2b.md), [Business Express](usage/business-express.md)
+- Reference: [API](reference/api.md), [Environment variables](reference/environment.md)
+- Support: [Troubleshooting](support/troubleshooting.md) · [FAQ](support/faq.md)
+
+## Project structure
+
+```text
+pkg/
+  handler/          # Public client and operations
+  internal/
+    auth/           # Basic auth token creation
+    builder/        # Helpers (base URLs, phone formatting, timestamp)
+    config/         # Viper-based configuration loader
+    x509/           # go:embed certs + security credential generation
+example/            # Example .env and sample usage
+```
