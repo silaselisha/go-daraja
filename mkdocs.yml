@@ -1,1 +1,78 @@
-site_name: My Docs
+site_name: Go Daraja
+site_description: Lightweight, idiomatic Go client for Safaricom Daraja (M‑Pesa)
+site_url: https://silaselisha.github.io/go-daraja/
+repo_url: https://github.com/silaselisha/go-daraja
+repo_name: silaselisha/go-daraja
+edit_uri: edit/main/docs/
+use_directory_urls: true
+strict: false
+
+theme:
+  name: material
+  logo: assets/images/godarajamascott.png
+  favicon: assets/images/godarajamascott.png
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.integrate
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.action.edit
+  palette:
+    - media: '(prefers-color-scheme: light)'
+      scheme: default
+      primary: indigo
+      accent: indigo
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      primary: indigo
+      accent: indigo
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - codehilite
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/silaselisha/go-daraja
+
+nav:
+  - Overview: index.md
+  - Getting started:
+      - Installation: getting-started/installation.md
+      - Quickstart: getting-started/quickstart.md
+  - Configuration: configuration.md
+  - Usage:
+      - STK Push (NI): usage/ni-push.md
+      - Business to Consumer (B2C): usage/b2c.md
+      - Customer to Business (C2B): usage/c2b.md
+      - Business to Business (B2B - BuyGoods): usage/b2b.md
+      - Business Express Checkout: usage/business-express.md
+  - Advanced:
+      - Functional options: advanced/options.md
+      - Custom HTTP client: advanced/http-client.md
+      - Logging: advanced/logging.md
+  - Reference:
+      - API: reference/api.md
+      - Environment variables: reference/environment.md
+  - Support:
+      - Troubleshooting: support/troubleshooting.md
+      - FAQ: support/faq.md
+  - Contributing: contributing.md
+  - Security: security.md
