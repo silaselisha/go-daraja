@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"fmt"
-	"net/http"
+    "context"
+    "fmt"
+    "net/http"
 
-	"github.com/silaselisha/go-daraja/pkg/internal/builder"
+    "github.com/silaselisha/go-daraja/pkg/internal/builder"
 )
 
 type b2cType int
@@ -15,25 +16,28 @@ const (
 )
 
 type C2BReqParams struct {
-	ShortCode       string
-	ResponseType    string
-	ConfirmationURL string
-	ValidationURL   string
+    ShortCode       string `json:"ShortCode"`
+    ResponseType    string `json:"ResponseType"`
+    ConfirmationURL string `json:"ConfirmationURL"`
+    ValidationURL   string `json:"ValidationURL"`
 }
 
 func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error) {
-	URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/c2b/v1/registerurl")
+    return cl.CustomerToBusinessCtx(context.Background(), confirmationURL, validationURL, responseType)
+}
+
+func (cl *DarajaClient) CustomerToBusinessCtx(ctx context.Context, confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error) {
+    URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/c2b/v1/registerurl")
 
 	var command string
-	switch {
-	case responseType == 0:
-		command = "CANCELLED"
-	case responseType == 1:
-		command = "COMPLETED"
-
-	default:
-		command = "CANCELLED"
-	}
+    switch responseType {
+    case CANCELLED:
+        command = "Cancelled"
+    case COMPLETED:
+        command = "Completed"
+    default:
+        command = "Cancelled"
+    }
 	payload := C2BReqParams{
 		ShortCode:       cl.configs.DarajaBusinessShortCode,
 		ResponseType:    command,
@@ -41,5 +45,5 @@ func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string
 		ValidationURL:   validationURL,
 	}
 
-	return handlerHelper(payload, URL, http.MethodPost, cl.AccessToken)
+    return handlerHelperCtx(cl, ctx, payload, URL, http.MethodPost, cl.AccessToken)
 }

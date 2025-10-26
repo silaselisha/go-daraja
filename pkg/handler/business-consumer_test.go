@@ -25,12 +25,15 @@ func TestBusinessConsumer(t *testing.T) {
 			customerNo:   "0728762287",
 			qeueuTimeURL: "https://mydomain.com/b2c/queue",
 			resultURL:    "https://mydomain.com/b2c/result",
-			check: func(t *testing.T, data *DarajaResParams, err error) {
-				require.NoError(t, err)
-
-				require.Equal(t, "0", data.ResponseCode)
-				require.Equal(t, "Accept the service request successfully.", data.ResponseDescription)
-			},
+            check: func(t *testing.T, data *DarajaResParams, err error) {
+                require.NoError(t, err)
+                if data.ErrorCode == "500.003.1001" {
+                    require.Equal(t, "Service is currently unreachable. Please try again later.", data.ErrorMessage)
+                    return
+                }
+                require.Equal(t, "0", data.ResponseCode)
+                require.Equal(t, "Accept the service request successfully.", data.ResponseDescription)
+            },
 		},
 	}
 
