@@ -1,0 +1,66 @@
+name: Refresh built site on master/main
+
+on:
+  push:
+    branches: [ "master", "main" ]
+    # Avoid infinite loops when the workflow commits only `site/` updates
+    paths-ignore:
+      - 'site/**'
+
+concurrency:
+  group: refresh-site-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-site:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+      
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install MkDocs and theme
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-material pymdown-extensions
+
+      - name: Build docs to temporary directory
+        run: |
+          mkdocs --version
+          # Build to a separate directory so we can rsync into site/
+          mkdocs build --strict --site-dir site-build
+
+      - name: Atomically refresh site directory
+        run: |
+          # Ensure site directory exists
+          mkdir -p site
+          # Use rsync with --delete to remove stale files and copy only changes
+          rsync -a --delete site-build/ site/
+          rm -rf site-build
+
+      - name: Commit and push if site changed
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -e
+          git add -A site
+          if git diff --staged --quiet; then
+            echo "No changes in site/, skipping commit."
+            exit 0
+          fi
+          git commit -m "chore(docs): refresh built site [skip ci]"
+          git push
