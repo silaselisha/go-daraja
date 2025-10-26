@@ -1,6 +1,10 @@
 name: go-daraja tests
 on:
-  [push]
+  push:
+    branches:
+      - '**'
+    paths-ignore:
+      - 'site/**'
 jobs:
   go-daraja-tests:
     runs-on: ubuntu-latest

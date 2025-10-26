@@ -2,12 +2,12 @@ name: Build docs (MkDocs)
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "develop" ]
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "main" ]
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
@@ -37,12 +37,12 @@ jobs:
           pip install mkdocs-material pymdown-extensions
 
       - name: Build docs
-        run: mkdocs build --strict
+        run: mkdocs build --strict --site-dir site-build
 
       - name: Upload built site artifact
         uses: actions/upload-artifact@v4
         with:
           name: mkdocs-site
-          path: site
+          path: site-build
           if-no-files-found: error
           retention-days: 7
