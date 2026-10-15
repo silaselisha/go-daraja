@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/assets/images/godarajamascott.png" alt="go-daraja" width="80" />
+  <img src="public/images/godarajamascott.png" alt="go-daraja" width="80" />
 
   # go-daraja
 
