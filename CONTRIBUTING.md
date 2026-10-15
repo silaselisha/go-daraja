@@ -31,7 +31,3 @@ Follow standard Go conventions. Run `go vet ./...` and format code with `gofmt` 
 ## Reporting Issues
 
 Use the issue templates when reporting bugs or requesting features. Include reproduction steps, expected behavior, and relevant environment details.
-
-## Code of Conduct
-
-All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
