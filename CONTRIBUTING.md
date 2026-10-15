@@ -1,41 +1,37 @@
-# How to contribute
+# Contributing to go-daraja
 
-We definitely welcome your patches and contributions to go-daraja! Please read the  [contribution guidelines](https://github.com/silaselisha/go-daraja/blob/master/CONTRIBUTING.md) before proceeding.
+Thank you for your interest in contributing. This guide outlines the process for proposing changes.
 
-If you are new to github, please start by reading [Pull Request howto](https://help.github.com/articles/about-pull-requests/)
+## Getting Started
 
-## Guidelines for Pull Requests
+1. Fork the repository and create a branch from `master`.
+2. Make your changes.
+3. Ensure tests pass:
 
-How to get your contributions merged smoothly and quickly.
+   ```bash
+   go test ./...
+   ```
 
-- Create **small PRs** that are narrowly focused on **addressing a single
-  concern**. We often times receive PRs that are trying to fix several things at
-  a time, but only one fix is considered acceptable, nothing gets merged and
-  both author's & review's time is wasted. Create more PRs to address different
-  concerns and everyone will be happy.
+4. Open a pull request against `master`.
 
-- If you are searching for features to work on, issues are well-documented and usually   can beresolved with a single pull request.
+## Pull Request Guidelines
 
+- Keep changes focused. A pull request should address a single concern.
+- Provide a clear description of the change and the reason for it. Link related issues when applicable.
+- Prefer small, reviewable commits with descriptive messages.
+- Keep the branch up to date with `master` to avoid merge conflicts.
+- All tests must pass before a change can be merged.
 
-- For speculative changes, consider opening an issue and discussing it first. 
+For larger or speculative changes, open an issue for discussion first.
 
-- Provide a good **PR description** as a record of **what** change is being made
-  and **why** it was made. Link to a github issue if it exists.
+## Code Style
 
-- If you want to fix formatting or style, consider whether your changes are an 
-  obvious improvement or might be considered a personal preference. If a style 
-  change is based on preference, it likely will not be accepted. If it corrects 
-  widely agreed-upon anti-patterns, then please do create a PR and explain the 
-  benefits of the change.
+Follow standard Go conventions. Run `go vet ./...` and format code with `gofmt` before submitting.
 
-- Maintain **clean commit history** and use **meaningful commit messages**. PRs
-  with messy commit history are difficult to review and won't be merged. Fork the project
-  and create a new branch to start woring on.
+## Reporting Issues
 
-- Keep your PR up to date with upstream/master (if there are merge conflicts, we
-  can't really merge your change).
+Use the issue templates when reporting bugs or requesting features. Include reproduction steps, expected behavior, and relevant environment details.
 
-- **All tests need to be passing** before your change can be merged. We
-  recommend you **run tests locally** before creating your PR to catch breakages
-  early on.
-  - `go test --cover -v ./...` to run the tests
+## Code of Conduct
+
+All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
