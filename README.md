@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="public/images/godarajamascott.png" alt="go-daraja" width="80" />
+  <img src="public/images/godarajamascott.png" alt="pokea" width="80" />
 
-  # go-daraja
+  # pokea
 
   Go client for Safaricom Daraja (M-Pesa) APIs.
 
