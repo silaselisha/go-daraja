@@ -1,107 +1,62 @@
-<div align="center" style="margin-bottom: 0px!important; padding: 0px;">
-  <img src="./public/images/godarajamascott.png" alt="go-daraja logo" height="100px"/>
+<div align="center">
+  <img src="docs/assets/images/godarajamascott.png" alt="go-daraja" width="100" />
+
+  <h1>go-daraja</h1>
+
+  A lightweight, idiomatic Go client for Safaricom’s Daraja (M-Pesa) APIs.
+
+  [![Go](https://img.shields.io/badge/go-%3E%3D1.22-00ADD8?logo=go&logoColor=white)](https://go.dev/)
+  [![License](https://img.shields.io/github/license/silaselisha/go-daraja)](LICENSE)
+  [![Docs](https://img.shields.io/badge/docs-online-blue)](https://silaselisha.github.io/go-daraja/)
 </div>
 
-<div style="align-items: center; margin-top: 0px !important; margin-bottom: 14px;" align="center">
-  <p style="text-align: center;" align="center">
-    <img src="https://img.shields.io/badge/go-%3E%3D1.22-blue?logo=go" />
-    <img src="https://img.shields.io/github/license/silaselisha/go-daraja" />
-    <img src="https://img.shields.io/github/actions/workflow/status/silaselisha/go-daraja/ci.yml?label=CI" />
-  </p>
-</div>
+---
 
-<div style="text-align: center;">
-  <h1>
-    Introducing the Ultimate Go Daraja (M‑Pesa) Client
-  </h1>
-</div>
+## Overview
 
-go-daraja is a lightweight, idiomatic Go client for Safaricom's Daraja (M‑Pesa) APIs. It emphasizes a clean developer experience, easy configuration across environments, and safe defaults for production.
+go-daraja provides a clean, consistent interface to the core Daraja payment flows. It prioritizes safe defaults, straightforward configuration, and context-aware operations suitable for production use.
 
-### Why Would I use this?
+**Key features**
 
-- Easy to set up and install
-- Have a clean, consistent API surface
-- Context-aware calls for timeouts/cancellation
-- Pluggable `http.Client` for custom transports/retries
-- 12‑factor configuration via OS env, optional `.env`
-- Embedded X.509 certs and typed error model
-- Covers core Daraja flows (STK Push, B2C, C2B, B2B, Business Express)
+- Functional options for client construction
+- Context support for cancellation and timeouts
+- Pluggable `http.Client`
+- 12-factor configuration (environment variables, optional `.env`)
+- Embedded X.509 certificates (sandbox and production)
+- Coverage of STK Push, B2C, C2B, B2B, and Business Express
 
-## Table of Contents
+## Installation
 
-- [Install](#install)
-- [APIs Covered](#apis-covered)
-- [Advanced Features](#advanced-features)
-- [Configuration](#configuration)
-- [Usage Examples](#usage-examples)
-- [Project Structure](#project-structure)
-- [Development](#development)
-- [GitHub Stats](#github-stats)
-- [Contributing](#contributing)
-- [Security](#security)
-- [License](#license)
-
-<a id="install"></a>
-
-<h2>
-  Install
-</h2>
-
-### Go Get
 ```bash
 go get github.com/silaselisha/go-daraja
 ```
 
-Then import and construct a client:
-
 ```go
-import (
-  "log"
-  daraja "github.com/silaselisha/go-daraja/pkg/handler"
-)
+import daraja "github.com/silaselisha/go-daraja/pkg/handler"
 
-func main() {
-  client, err := daraja.NewClient()
-  if err != nil { log.Fatal(err) }
-  // ...
+client, err := daraja.NewClient()
+if err != nil {
+    log.Fatal(err)
 }
 ```
 
-<a id="apis-covered"></a>
+## Configuration
 
-<h2>
-  APIs Covered
-</h2>
+Configuration is loaded from the environment. An optional `.env` file may be provided via `WithEnvFile`.
 
-- STK Push (NI)
-- Business to Customer (B2C)
-- Customer to Business (C2B)
-- Business to Business (B2B)
-- Business Express Checkout
-- OAuth access token generation
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `MPESA_ENVIRONMENT` | No | `sandbox` (default) or `production` |
+| `DARAJA_CONSUMER_KEY` | Yes | Consumer key |
+| `DARAJA_CONSUMER_SECRET` | Yes | Consumer secret |
+| `DARAJA_BUSINESS_SHORT_CODE` | Yes* | Business short code |
+| `DARAJA_PASS_KEY` | Yes* | Pass key |
+| `DARAJA_CALL_BACK_URL` | Yes* | Callback URL |
+| `DARAJA_ACCOUNT_REF` | No | Account reference |
+| `DARAJA_INITIATOR_NAME` | B2C/B2B | Initiator name |
+| `DARAJA_INITIATOR_PASSWORD` | B2C/B2B | Initiator password |
 
-<a id="advanced-features"></a>
-
-<h2>
-  Advanced Features
-</h2>
-
-Use functional options with `NewClient(...)` to tailor behavior:
-
-- HTMX-style context support via `*_Ctx` methods for cancellation/timeouts
-- Inject your own `http.Client` (retries, proxies, tracing)
-- Load configuration from `.env` with `WithEnvFile("path")`
-- Embedded sandbox/production X.509 certs via `go:embed`
-- Consistent, typed errors; backward compatible responses
-
-<a id="configuration"></a>
-
-<h2>
-  Configuration
-</h2>
-
-Set required envs (12‑factor friendly). `.env` is optional and supported.
+\* Required for most payment operations.
 
 ```bash
 export MPESA_ENVIRONMENT=sandbox
@@ -110,134 +65,104 @@ export DARAJA_CONSUMER_SECRET=your_secret
 export DARAJA_BUSINESS_SHORT_CODE=174379
 export DARAJA_PASS_KEY=your_pass_key
 export DARAJA_CALL_BACK_URL=https://your.app/callback
-export DARAJA_ACCOUNT_REF=YourApp
-# Required for B2C/B2B:
-export DARAJA_INITIATOR_NAME=your_initiator
-export DARAJA_INITIATOR_PASSWORD=your_password
 ```
 
-<a id="usage-examples"></a>
+## Supported APIs
 
-<h2>
-  Usage Examples
-</h2>
+- **STK Push** (Lipa na M-Pesa Online)
+- **Business to Customer** (B2C)
+- **Customer to Business** (C2B)
+- **Business to Business** (B2B)
+- **Business Express Checkout**
+- **OAuth** access token generation
 
-Quickstart:
+## Usage
 
-```go
-client, err := daraja.NewClient()
-if err != nil { log.Fatal(err) }
-```
-
-STK Push (NI):
+### STK Push
 
 ```go
 res, err := client.NIPush("payment for order #123", "0712345678", 100)
 ```
 
-B2C:
+### Business to Customer
 
 ```go
 res, err := client.BusinessToConsumer(
-  100, 0, "0712345678", "salary",
-  "https://example.com/timeout",
-  "https://example.com/result",
+    100, 0, "0712345678", "salary",
+    "https://example.com/timeout",
+    "https://example.com/result",
 )
 ```
 
-C2B register URLs:
+### Customer to Business (register URLs)
 
 ```go
 res, err := client.CustomerToBusiness(
-  "https://example.com/confirm",
-  "https://example.com/validate",
-  1,
+    "https://example.com/confirm",
+    "https://example.com/validate",
+    1,
 )
 ```
 
-Business Express Checkout:
+### Business Express Checkout
 
 ```go
 res, err := client.BusinessExpressCheckout(
-  "PAY-123",
-  "https://example.com/callback",
-  "YourBiz",
-  "600000",
-  100,
+    "PAY-123",
+    "https://example.com/callback",
+    "YourBiz",
+    "600000",
+    100,
 )
 ```
 
-Backward compatible constructor:
+### Functional options
 
 ```go
-client, err := daraja.NewDarajaClient(".")
+client, err := daraja.NewClient(
+    daraja.WithEnvFile("."),
+    daraja.WithHTTPClient(customHTTPClient),
+    daraja.WithLogger(logger),
+)
 ```
 
-<a id="project-structure"></a>
+Context-aware variants (`NIPushCtx`, etc.) are available for cancellation and timeouts.
 
-<h2>
-  Project Structure
-</h2>
+## Project Structure
 
-```text
+```
 pkg/
   handler/          # Public client and operations
   internal/
-    auth/           # Basic auth token creation
-    builder/        # Helpers (base URLs, phone formatting, timestamp)
-    config/         # Viper-based configuration loader
-    x509/           # go:embed certs + security credential generation
-example/            # Example .env and sample usage
+    auth/           # Token generation
+    builder/        # URL, phone, and timestamp helpers
+    config/         # Configuration loader
+    x509/           # Embedded certificates and security credentials
+example/            # Sample usage
+docs/               # Documentation site
 ```
 
-<a id="development"></a>
+## Development
 
-<h2>
-  Development
-</h2>
+Requires Go 1.22 or later.
 
-Prereqs: Go >= 1.22
-
-- Run tests:
 ```bash
 go test ./...
-```
-
-- Lint/inspect locally:
-```bash
 go vet ./...
 ```
 
-<a id="github-stats"></a>
+## Documentation
 
-<h2>
-  GitHub Stats
-</h2>
+Full documentation is available at [silaselisha.github.io/go-daraja](https://silaselisha.github.io/go-daraja/).
 
-<p align="center">
-  <img src="https://repobeats.axiom.co/api/embed/36b264b4be024052073f9c5703b102cd24693c62.svg" alt="go-daraja stats" title="Repobeats analytics image"/>
- </p>
+## Contributing
 
-<a id="contributing"></a>
+Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 
-<h2>
-  Contributing
-</h2>
+## Security
 
-Contributions are welcome! Please read `CONTRIBUTING.md` and open an issue or PR.
+Report security issues privately by following the process in [SECURITY.md](SECURITY.md).
 
-<a id="security"></a>
+## License
 
-<h2>
-  Security
-</h2>
-
-If you discover a security vulnerability, please follow the process in `SECURITY.md`.
-
-<a id="license"></a>
-
-<h2>
-  License
-</h2>
-
-This project is licensed under the MIT License. See `LICENSE` for details.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
