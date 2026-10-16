@@ -4,7 +4,7 @@ import (
     "net/http"
     "time"
 
-    "github.com/silaselisha/go-daraja/pkg/internal/config"
+    "github.com/silaselisha/pokea/pkg/internal/config"
 )
 
 type Daraja interface {
