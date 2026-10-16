@@ -8,9 +8,9 @@ import (
     "net/http"
     "time"
 
-    "github.com/silaselisha/go-daraja/pkg/internal/auth"
-    "github.com/silaselisha/go-daraja/pkg/internal/builder"
-    "github.com/silaselisha/go-daraja/pkg/internal/config"
+    "github.com/silaselisha/pokea/pkg/internal/auth"
+    "github.com/silaselisha/pokea/pkg/internal/builder"
+    "github.com/silaselisha/pokea/pkg/internal/config"
 )
 
 type DarajaAuth struct {
