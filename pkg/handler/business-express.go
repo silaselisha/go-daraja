@@ -6,7 +6,7 @@ import (
     "net/http"
 
     "github.com/google/uuid"
-    "github.com/silaselisha/go-daraja/pkg/internal/builder"
+    "github.com/silaselisha/pokea/pkg/internal/builder"
 )
 
 type BExpressCheckoutParams struct {
