@@ -6,7 +6,7 @@ import (
     "fmt"
     "net/http"
 
-    "github.com/silaselisha/go-daraja/pkg/internal/builder"
+    "github.com/silaselisha/pokea/pkg/internal/builder"
 )
 
 type NICallbackParams struct {
