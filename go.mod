@@ -1,4 +1,4 @@
-module github.com/silaselisha/go-daraja
+module github.com/silaselisha/pokea
 
 go 1.22.0
 
