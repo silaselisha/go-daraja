@@ -3,7 +3,7 @@ package handler
 import (
 	"testing"
 
-	"github.com/silaselisha/go-daraja/pkg/internal/config"
+	"github.com/silaselisha/pokea/pkg/internal/config"
 	"github.com/stretchr/testify/require"
 )
 
