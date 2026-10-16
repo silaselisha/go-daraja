@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/silaselisha/go-daraja/pkg/internal/config"
+	"github.com/silaselisha/pokea/pkg/internal/config"
 )
 
 func TestGenSecurityCred(t *testing.T) {
