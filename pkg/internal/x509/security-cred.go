@@ -11,7 +11,7 @@ import (
     "os"
     "path"
 
-    "github.com/silaselisha/go-daraja/pkg/internal/config"
+    "github.com/silaselisha/pokea/pkg/internal/config"
 )
 
 //go:embed cert/*.cer
