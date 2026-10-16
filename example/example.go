@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/silaselisha/go-daraja/pkg/handler"
+	"github.com/silaselisha/pokea/pkg/handler"
 )
 
 func dukaHandler(w http.ResponseWriter, r *http.Request) {
