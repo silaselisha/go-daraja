@@ -5,8 +5,8 @@ import (
     "fmt"
     "net/http"
 
-    "github.com/silaselisha/go-daraja/pkg/internal/x509"
-    "github.com/silaselisha/go-daraja/pkg/internal/builder"
+    "github.com/silaselisha/pokea/pkg/internal/x509"
+    "github.com/silaselisha/pokea/pkg/internal/builder"
 )
 
 type B2BReqParams struct {
