@@ -1,8 +1,13 @@
 package handler
 
 import (
+	"encoding/json"
+	"io"
+	"net/http"
+	"strings"
 	"testing"
 
+	"github.com/silaselisha/pokea/pkg/internal/config"
 	"github.com/stretchr/testify/require"
 )
 
@@ -53,4 +58,18 @@ func TestBusinessBuyGoods(t *testing.T) {
 			tc.check(t, data, err)
 		})
 	}
+}
+
+func TestBusinessBuyGoodsIdentifierTypes(t *testing.T) {
+	var body B2BReqParams
+	hc := &http.Client{Transport: roundTripFunc(func(r *http.Request) (*http.Response, error) {
+		require.NoError(t, json.NewDecoder(r.Body).Decode(&body))
+		return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(strings.NewReader(`{"ResponseCode":"0"}`)), Header: make(http.Header), Request: r}, nil
+	})}
+	cl := &PokeaClient{configs: &config.Configs{MpesaEnvironment: "sandbox", PokeaInitiatorPassword: "secret"}, httpClient: hc}
+
+	_, err := cl.BusinessBuyGoods(1, "apiuser", "000000", "BusinessBuyGoods", "remarks", "https://example.com/r", "https://example.com/t", "2", "4", "ref")
+	require.NoError(t, err)
+	require.Equal(t, "2", body.RecieverIdentifierType)
+	require.Equal(t, "4", body.SenderIdentifierType)
 }
