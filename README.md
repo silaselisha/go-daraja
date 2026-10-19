@@ -24,7 +24,7 @@ A Go client for the Safaricom M-Pesa APIs.
 
 ## Overview
 
-Pokea handles OAuth token acquisition, request signing, security credential generation and response decoding for the M-Pesa APIs, so you can start payments with a single method call. It targets both the sandbox and production environments.
+Pokea handles OAuth token acquisition, STK push password generation, security credential generation and response decoding for the M-Pesa APIs, so you can start payments with a single method call. It targets both the sandbox and production environments.
 
 ## Features
 
