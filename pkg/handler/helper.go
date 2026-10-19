@@ -6,11 +6,17 @@ import (
     "encoding/json"
     "fmt"
     "io"
-    "log"
     "net/http"
 )
 
-func handlerHelperCtx[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](cl *DarajaClient, ctx context.Context, payload T, url, method, authToken string) (*DarajaResParams, error) {
+// handlerHelperCtx sends a request to the M-Pesa API and decodes the response.
+//
+// On failure it returns a non-nil *APIError. For backward compatibility the
+// response is also returned with its error fields populated, so callers that
+// inspect ErrorCode keep working; new code should check err first.
+func handlerHelperCtx[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](cl *PokeaClient, ctx context.Context, payload T, url, method, authToken string) (*PokeaResParams, error) {
+    const op = "pokea request"
+
 	buff, err := json.Marshal(&payload)
 	if err != nil {
 		return nil, err
@@ -34,76 +40,78 @@ func handlerHelperCtx[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqP
     }
     res, err := client.Do(req)
     if err != nil {
-        // Backward-compatible: encode network error in response
-        return &DarajaResParams{
-            DarajaErrorParams: DarajaErrorParams{
-                ErrorCode:    "500.003.1001",
-                ErrorMessage: "Service is currently unreachable. Please try again later.",
-            },
-        }, nil
+        return failedResponse(unreachableError(op, 0, nil, err))
     }
-
-	defer func() {
-		if err := res.Body.Close(); err != nil {
-			log.Fatalf("failed to close response body %v\n", err)
-		}
-	}()
+    defer res.Body.Close()
 
     buff, err = io.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return failedResponse(unreachableError(op, res.StatusCode, nil, err))
 	}
 
-    var result DarajaResParams
-    if err := json.Unmarshal(buff, &result); err == nil {
-        // If we successfully parsed but key fields are empty, try alternate shapes
-        if result.ResponseCode == "" && result.ErrorCode == "" {
-            // Attempt to parse B2C callback/result envelope
-            type b2cResultEnvelope struct {
-                Result struct {
-                    ResultType                 int    `json:"ResultType"`
-                    ResultCode                 int    `json:"ResultCode"`
-                    ResultDesc                 string `json:"ResultDesc"`
-                    OriginatorConversationID   string `json:"OriginatorConversationID"`
-                    ConversationID             string `json:"ConversationID"`
-                } `json:"Result"`
+    var result PokeaResParams
+    if err := json.Unmarshal(buff, &result); err != nil {
+        // Non-JSON body (e.g., HTML error page from a gateway)
+        return failedResponse(unreachableError(op, res.StatusCode, buff, err))
+    }
+
+    // If key fields are empty, try the B2C callback/result envelope shape
+    if result.ResponseCode == "" && result.ErrorCode == "" {
+        type b2cResultEnvelope struct {
+            Result struct {
+                ResultType                 int    `json:"ResultType"`
+                ResultCode                 int    `json:"ResultCode"`
+                ResultDesc                 string `json:"ResultDesc"`
+                OriginatorConversationID   string `json:"OriginatorConversationID"`
+                ConversationID             string `json:"ConversationID"`
+            } `json:"Result"`
+        }
+        var env b2cResultEnvelope
+        if err := json.Unmarshal(buff, &env); err == nil && (env.Result.ResultDesc != "" || env.Result.ResultCode != 0) {
+            // Map to our common response shape per docs
+            result.ResponseCode = fmt.Sprintf("%d", env.Result.ResultCode)
+            // Prefer the documented ack phrase when unknown
+            if env.Result.ResultDesc != "" {
+                result.ResponseDescription = env.Result.ResultDesc
+            } else if result.ResponseDescription == "" {
+                result.ResponseDescription = "Accept the service request successfully."
             }
-            var env b2cResultEnvelope
-            if err := json.Unmarshal(buff, &env); err == nil && (env.Result.ResultDesc != "" || env.Result.ResultCode != 0) {
-                // Map to our common response shape per docs
-                if env.Result.ResultCode == 0 {
-                    result.ResponseCode = "0"
-                } else {
-                    result.ResponseCode = fmt.Sprintf("%d", env.Result.ResultCode)
-                }
-                // Prefer the documented ack phrase when unknown
-                if env.Result.ResultDesc != "" {
-                    result.ResponseDescription = env.Result.ResultDesc
-                } else if result.ResponseDescription == "" {
-                    result.ResponseDescription = "Accept the service request successfully."
-                }
-                result.OriginatorConversationID = env.Result.OriginatorConversationID
-                result.ConversationID = env.Result.ConversationID
-                return &result, nil
-            }
-        } else {
-            return &result, nil
+            result.OriginatorConversationID = env.Result.OriginatorConversationID
+            result.ConversationID = env.Result.ConversationID
         }
     }
 
-    // If the standard response shape failed to parse, try parsing known error fields
-    var errPayload DarajaErrorParams
-    if err := json.Unmarshal(buff, &errPayload); err == nil {
-        result.DarajaErrorParams = errPayload
-        return &result, nil
+    if result.ErrorCode != "" || res.StatusCode < 200 || res.StatusCode > 299 {
+        apiErr := &APIError{
+            Status:    res.StatusCode,
+            Code:      result.ErrorCode,
+            Message:   result.ErrorMessage,
+            RequestID: result.RequestID,
+            RawBody:   buff,
+            Op:        op,
+        }
+        if apiErr.Message == "" {
+            apiErr.Message = http.StatusText(res.StatusCode)
+        }
+        return &result, apiErr
     }
 
-    // Fallback: non-JSON (e.g., HTML error page). Map to a generic unreachable error
-    return &DarajaResParams{DarajaErrorParams: DarajaErrorParams{ErrorCode: "500.003.1001", ErrorMessage: "Service is currently unreachable. Please try again later."}}, nil
+    return &result, nil
+}
+
+// failedResponse returns a response mirroring apiErr alongside the error itself.
+func failedResponse(apiErr *APIError) (*PokeaResParams, error) {
+    return &PokeaResParams{
+        PokeaErrorParams: PokeaErrorParams{
+            RequestID:    apiErr.RequestID,
+            ErrorCode:    apiErr.Code,
+            ErrorMessage: apiErr.Message,
+        },
+    }, apiErr
 }
 
 // Backward-compatible helper without context
-func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) (*DarajaResParams, error) {
-    cl := &DarajaClient{}
+func handlerHelper[T B2BReqParams | B2CReqParams | C2BReqParams | ExpressReqParams | BExpressCheckoutParams](payload T, url, method, authToken string) (*PokeaResParams, error) {
+    cl := &PokeaClient{}
     return handlerHelperCtx(cl, context.Background(), payload, url, method, authToken)
 }

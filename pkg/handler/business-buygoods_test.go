@@ -19,7 +19,7 @@ func TestBusinessBuyGoods(t *testing.T) {
 		senderID        string
 		amount          float64
 		accountRefrence string
-		check           func(t *testing.T, data *DarajaResParams, err error)
+		check           func(t *testing.T, data *PokeaResParams, err error)
 	}{
 		{
 			name:            "valid business buy goods txn",
@@ -33,7 +33,8 @@ func TestBusinessBuyGoods(t *testing.T) {
 			senderID:        "4",
 			amount:          239,
 			accountRefrence: "353353",
-			check: func(t *testing.T, data *DarajaResParams, err error) {
+			check: func(t *testing.T, data *PokeaResParams, err error) {
+				skipIfPokeaUnavailable(t, err)
 				require.NoError(t, err)
 
 				require.Equal(t, "0", data.ResponseCode)
@@ -44,7 +45,8 @@ func TestBusinessBuyGoods(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := NewDarajaClient("./../../example")
+			client, err := NewPokeaClient("./../../example")
+			skipIfPokeaUnavailable(t, err)
 			require.NoError(t, err)
 
 			data, err := client.BusinessBuyGoods(tc.amount, tc.username, tc.shortCode, tc.commandID, tc.remarks, tc.resultURL, tc.qeueuTimeOutURL, tc.receiverID, tc.senderID, tc.accountRefrence)

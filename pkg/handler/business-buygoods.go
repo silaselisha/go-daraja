@@ -25,11 +25,11 @@ type B2BReqParams struct {
 	ResultURL              string
 }
 
-func (cl *DarajaClient) BusinessBuyGoods(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) (*DarajaResParams, error) {
+func (cl *PokeaClient) BusinessBuyGoods(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) (*PokeaResParams, error) {
     return cl.BusinessBuyGoodsCtx(context.Background(), amount, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference)
 }
 
-func (cl *DarajaClient) BusinessBuyGoodsCtx(ctx context.Context, amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) (*DarajaResParams, error) {
+func (cl *PokeaClient) BusinessBuyGoodsCtx(ctx context.Context, amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountReference string) (*PokeaResParams, error) {
     URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/b2b/v1/paymentrequest")
 
     // Use embedded certs by passing empty path; allow override later via options if needed
@@ -45,7 +45,7 @@ func (cl *DarajaClient) BusinessBuyGoodsCtx(ctx context.Context, amount float64,
 		SenderIdentifierType:   receiverID,
 		RecieverIdentifierType: senderID,
 		Amount:                 amount,
-		PartyA:                 cl.configs.DarajaBusinessShortCode,
+		PartyA:                 cl.configs.PokeaBusinessShortCode,
 		PartyB:                 shortCode,
 		AccountReference:       accountReference,
 		Remarks:                remarks,

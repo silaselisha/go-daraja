@@ -13,14 +13,14 @@ import (
 func dukaHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method == http.MethodPost {
-		darajaClient, err := handler.NewDarajaClient("./..")
+		pokeaClient, err := handler.NewPokeaClient("./..")
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
 			return
 		}
 
-		res, err := darajaClient.NIPush("test", "0792918261", 1)
+		res, err := pokeaClient.NIPush("test", "0792918261", 1)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))

@@ -3,6 +3,8 @@ package config
 import (
     "errors"
     "fmt"
+    "os"
+    "reflect"
     "strings"
 
     "github.com/spf13/viper"
@@ -10,29 +12,29 @@ import (
 
 type Configs struct {
     MpesaEnvironment                      string `mapstructure:"MPESA_ENVIRONMENT"`
-    DarajaConsumerKey                      string `mapstructure:"DARAJA_CONSUMER_KEY"`
-    DarajaConsumerSecret                   string `mapstructure:"DARAJA_CONSUMER_SECRET"`
-    DarajaBusinessShortCode                string `mapstructure:"DARAJA_BUSINESS_SHORT_CODE"`
-    DarajaPassKey                          string `mapstructure:"DARAJA_PASS_KEY"`
-    DarajaTransactionType                  string `mapstructure:"DARAJA_TRANSACTION_TYPE"`
-    DarajaCallBackURL                      string `mapstructure:"DARAJA_CALL_BACK_URL"`
-    DarajaPartyA                           string `mapstructure:"DARAJA_PARTY_A"`
-    DarajaPartyB                           string `mapstructure:"DARAJA_PARTY_B"`
-    DarajaAccountRef                       string `mapstructure:"DARAJA_ACCOUNT_REF"`
-    DarajaInitiatorName                    string `mapstructure:"DARAJA_INITIATOR_NAME"`
-    DarajaInitiatorPassword                string `mapstructure:"DARAJA_INITIATOR_PASSWORD"`
-    DarajaBusinessConsumerPartyA           string `mapstructure:"DARAJA_BUSINESS_CONSUMR_PARTY_A"`
-    DarajaCPI                              string `mapstructure:"DARAJA_CREDIT_PARTY_IDENTIFIER"`
-    DarajaBusinessExpressCheckoutShortCode string `mapstructure:"DARAJA_BUSINESS_EXPRESS_CHECKOUT_SHORT_CODE"`
+    PokeaConsumerKey                      string `mapstructure:"POKEA_CONSUMER_KEY"`
+    PokeaConsumerSecret                   string `mapstructure:"POKEA_CONSUMER_SECRET"`
+    PokeaBusinessShortCode                string `mapstructure:"POKEA_BUSINESS_SHORT_CODE"`
+    PokeaPassKey                          string `mapstructure:"POKEA_PASS_KEY"`
+    PokeaTransactionType                  string `mapstructure:"POKEA_TRANSACTION_TYPE"`
+    PokeaCallBackURL                      string `mapstructure:"POKEA_CALL_BACK_URL"`
+    PokeaPartyA                           string `mapstructure:"POKEA_PARTY_A"`
+    PokeaPartyB                           string `mapstructure:"POKEA_PARTY_B"`
+    PokeaAccountRef                       string `mapstructure:"POKEA_ACCOUNT_REF"`
+    PokeaInitiatorName                    string `mapstructure:"POKEA_INITIATOR_NAME"`
+    PokeaInitiatorPassword                string `mapstructure:"POKEA_INITIATOR_PASSWORD"`
+    PokeaBusinessConsumerPartyA           string `mapstructure:"POKEA_BUSINESS_CONSUMR_PARTY_A"`
+    PokeaCPI                              string `mapstructure:"POKEA_CREDIT_PARTY_IDENTIFIER"`
+    PokeaBusinessExpressCheckoutShortCode string `mapstructure:"POKEA_BUSINESS_EXPRESS_CHECKOUT_SHORT_CODE"`
 }
 
-// ValidateAuth performs minimal validation necessary to authenticate against Daraja.
+// ValidateAuth performs minimal validation necessary to authenticate against the M-Pesa API.
 // It intentionally focuses on the values required to obtain an access token so that
 // client construction can succeed for most use cases. Operation-specific validation
 // should be performed by the respective service methods when needed.
 func (c *Configs) ValidateAuth() error {
-    if c.DarajaConsumerKey == "" || c.DarajaConsumerSecret == "" {
-        return errors.New("missing DARAJA_CONSUMER_KEY or DARAJA_CONSUMER_SECRET")
+    if c.PokeaConsumerKey == "" || c.PokeaConsumerSecret == "" {
+        return errors.New("missing POKEA_CONSUMER_KEY or POKEA_CONSUMER_SECRET")
     }
     allowed := map[string]bool{"sandbox": true, "production": true}
     if c.MpesaEnvironment == "" {
@@ -61,7 +63,7 @@ func LoadConfigs(path string) (*Configs, error) {
 
     // Sensible defaults
     v.SetDefault("MPESA_ENVIRONMENT", "sandbox")
-    v.SetDefault("DARAJA_TRANSACTION_TYPE", "CustomerPayBillOnline")
+    v.SetDefault("POKEA_TRANSACTION_TYPE", "CustomerPayBillOnline")
 
     // Read .env when available; ignore if missing
     if err := v.ReadInConfig(); err != nil {
@@ -70,6 +72,8 @@ func LoadConfigs(path string) (*Configs, error) {
             return nil, err
         }
     }
+
+    bindEnv(v)
 
     var configs Configs
     if err := v.Unmarshal(&configs); err != nil {
@@ -80,12 +84,38 @@ func LoadConfigs(path string) (*Configs, error) {
     if configs.MpesaEnvironment == "" {
         configs.MpesaEnvironment = "sandbox"
     }
-    if configs.DarajaTransactionType == "" {
-        configs.DarajaTransactionType = "CustomerPayBillOnline"
+    if configs.PokeaTransactionType == "" {
+        configs.PokeaTransactionType = "CustomerPayBillOnline"
     }
 
     if err := configs.ValidateAuth(); err != nil {
         return nil, err
     }
     return &configs, nil
+}
+
+// legacyEnvPrefix is the deprecated prefix for POKEA_* settings.
+const legacyEnvPrefix = "DARAJA_"
+
+// bindEnv binds every setting to its environment variable so OS env vars are
+// read even without a .env file. Each POKEA_* setting also falls back to its
+// deprecated DARAJA_* counterpart, from the OS environment or the .env file.
+// Deprecated DARAJA_* names will be removed in the next major release.
+func bindEnv(v *viper.Viper) {
+    t := reflect.TypeOf(Configs{})
+    for i := 0; i < t.NumField(); i++ {
+        key := t.Field(i).Tag.Get("mapstructure")
+        if !strings.HasPrefix(key, "POKEA_") {
+            _ = v.BindEnv(key, key)
+            continue
+        }
+        legacy := legacyEnvPrefix + strings.TrimPrefix(key, "POKEA_")
+        _ = v.BindEnv(key, key, legacy)
+
+        _, inEnv := os.LookupEnv(key)
+        _, inLegacyEnv := os.LookupEnv(legacy)
+        if !inEnv && !inLegacyEnv && !v.InConfig(key) && v.InConfig(legacy) {
+            v.Set(key, v.Get(legacy))
+        }
+    }
 }

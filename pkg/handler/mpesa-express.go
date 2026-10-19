@@ -31,14 +31,14 @@ type ExpressReqParams struct {
 	TransactionDesc   string
 }
 
-func (cl *DarajaClient) NIPush(description string, phoneNumber string, amount float64) (*DarajaResParams, error) {
+func (cl *PokeaClient) NIPush(description string, phoneNumber string, amount float64) (*PokeaResParams, error) {
     return cl.NIPushCtx(context.Background(), description, phoneNumber, amount)
 }
 
-func (cl *DarajaClient) NIPushCtx(ctx context.Context, description string, phoneNumber string, amount float64) (*DarajaResParams, error) {
+func (cl *PokeaClient) NIPushCtx(ctx context.Context, description string, phoneNumber string, amount float64) (*PokeaResParams, error) {
 	timestamp := builder.GenTimestamp()
-	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.DarajaBusinessShortCode, cl.configs.DarajaPassKey, timestamp))
-    // Per Daraja docs, use standard Base64 encoding
+	result := []byte(fmt.Sprintf("%s%s%s", cl.configs.PokeaBusinessShortCode, cl.configs.PokeaPassKey, timestamp))
+    // Per M-Pesa API docs, use standard Base64 encoding
     password := base64.StdEncoding.EncodeToString(result)
 
 	mobileNumber, err := builder.PhoneNumberFormatter(phoneNumber)
@@ -47,16 +47,16 @@ func (cl *DarajaClient) NIPushCtx(ctx context.Context, description string, phone
 	}
 
 	payload := ExpressReqParams{
-		BusinessShortCode: cl.configs.DarajaBusinessShortCode,
+		BusinessShortCode: cl.configs.PokeaBusinessShortCode,
 		Password:          password,
 		Timestamp:         timestamp,
-		TransactionType:   cl.configs.DarajaTransactionType,
+		TransactionType:   cl.configs.PokeaTransactionType,
 		Amount:            amount,
 		PartyA:            mobileNumber,
-		PartyB:            cl.configs.DarajaBusinessShortCode,
+		PartyB:            cl.configs.PokeaBusinessShortCode,
 		PhoneNumber:       mobileNumber,
-		CallBackURL:       cl.configs.DarajaCallBackURL,
-		AccountReference:  cl.configs.DarajaAccountRef,
+		CallBackURL:       cl.configs.PokeaCallBackURL,
+		AccountReference:  cl.configs.PokeaAccountRef,
 		TransactionDesc:   description,
 	}
 

@@ -20,7 +20,7 @@ var embeddedCerts embed.FS
 // GenSecurityCred generates the security credential using either embedded certs or a provided filesystem path.
 // If filePath is empty, embedded certificates are used.
 func GenSecurityCred(config *config.Configs, filePath string) (string, error) {
-	passwordBuff := []byte(config.DarajaInitiatorPassword)
+	passwordBuff := []byte(config.PokeaInitiatorPassword)
 	fileName := "sandbox"
 	if config.MpesaEnvironment == "production" {
 		fileName = "production"

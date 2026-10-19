@@ -19,12 +19,12 @@ type BExpressCheckoutParams struct {
     RequestRefID      string  `json:"requestRefId"`
 }
 
-func (cl *DarajaClient) BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) (*DarajaResParams, error) {
+func (cl *PokeaClient) BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) (*PokeaResParams, error) {
     return cl.BusinessExpressCheckoutCtx(context.Background(), paymentRef, callbackURL, partnerName, receiver, amount)
 }
 
-func (cl *DarajaClient) BusinessExpressCheckoutCtx(ctx context.Context, paymentRef, callbackURL, partnerName, receiver string, amount float64) (*DarajaResParams, error) {
-    // Per Daraja Business Express docs
+func (cl *PokeaClient) BusinessExpressCheckoutCtx(ctx context.Context, paymentRef, callbackURL, partnerName, receiver string, amount float64) (*PokeaResParams, error) {
+    // Per M-Pesa Business Express docs
     URL := fmt.Sprintf("%s%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "/v1/ussdpush/get-msisdn")
 
 	requestRedID, err := uuid.NewRandom()
@@ -33,7 +33,7 @@ func (cl *DarajaClient) BusinessExpressCheckoutCtx(ctx context.Context, paymentR
 	}
 
 	payload := BExpressCheckoutParams{
-		PrimaryShortCode:  cl.configs.DarajaBusinessExpressCheckoutShortCode,
+		PrimaryShortCode:  cl.configs.PokeaBusinessExpressCheckoutShortCode,
 		ReceiverShortCode: receiver,
 		Amount:            amount,
 		PaymentRef:        paymentRef,
