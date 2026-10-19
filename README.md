@@ -1,4 +1,4 @@
-# pokea
+# Pokea
 
 A Go client for the Safaricom M-Pesa APIs.
 
@@ -24,9 +24,7 @@ A Go client for the Safaricom M-Pesa APIs.
 
 ## Overview
 
-pokea handles OAuth token acquisition, request signing, security credential generation and response decoding for the M-Pesa APIs, so you can start payments with a single method call. It targets both the sandbox and production environments.
-
-Full documentation is available at [silaselisha.github.io/pokea](https://silaselisha.github.io/pokea/).
+Pokea handles OAuth token acquisition, STK push password generation, security credential generation and response decoding for the M-Pesa APIs, so you can start payments with a single method call. It targets both the sandbox and production environments.
 
 ## Features
 
@@ -284,4 +282,4 @@ Notable changes are recorded in the [changelog](CHANGELOG.md).
 
 ## License
 
-pokea is released under the [MIT License](LICENSE).
+Pokea is released under the [MIT License](LICENSE).
