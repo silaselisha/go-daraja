@@ -15,7 +15,7 @@ func TestBusinessConsumer(t *testing.T) {
 		customerNo   string
 		qeueuTimeURL string
 		resultURL    string
-		check        func(t *testing.T, data *DarajaResParams, err error)
+		check        func(t *testing.T, data *PokeaResParams, err error)
 	}{
 		{
 			name:         "valid business consumer txn",
@@ -25,12 +25,9 @@ func TestBusinessConsumer(t *testing.T) {
 			customerNo:   "0728762287",
 			qeueuTimeURL: "https://mydomain.com/b2c/queue",
 			resultURL:    "https://mydomain.com/b2c/result",
-            check: func(t *testing.T, data *DarajaResParams, err error) {
+            check: func(t *testing.T, data *PokeaResParams, err error) {
+                skipIfPokeaUnavailable(t, err)
                 require.NoError(t, err)
-                if data.ErrorCode == "500.003.1001" {
-                    require.Equal(t, "Service is currently unreachable. Please try again later.", data.ErrorMessage)
-                    return
-                }
                 require.Equal(t, "0", data.ResponseCode)
                 require.Equal(t, "Accept the service request successfully.", data.ResponseDescription)
             },
@@ -39,7 +36,8 @@ func TestBusinessConsumer(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := NewDarajaClient("./../../example")
+			client, err := NewPokeaClient("./../../example")
+			skipIfPokeaUnavailable(t, err)
 			require.NoError(t, err)
 
 			data, err := client.BusinessToConsumer(tc.amount, tc.txnType, tc.customerNo, tc.remarks, tc.qeueuTimeURL, tc.resultURL)

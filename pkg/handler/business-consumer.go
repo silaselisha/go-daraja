@@ -31,11 +31,11 @@ type B2CReqParams struct {
     Occasion           string  `json:"Occasion,omitempty"`
 }
 
-func (cl *DarajaClient) BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, qeueuTimeOutURL, resultURL string) (*DarajaResParams, error) {
+func (cl *PokeaClient) BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, qeueuTimeOutURL, resultURL string) (*PokeaResParams, error) {
     return cl.BusinessToConsumerCtx(context.Background(), amount, txnType, customerNo, remarks, qeueuTimeOutURL, resultURL)
 }
 
-func (cl *DarajaClient) BusinessToConsumerCtx(ctx context.Context, amount float64, txnType txnType, customerNo, remarks, qeueuTimeOutURL, resultURL string) (*DarajaResParams, error) {
+func (cl *PokeaClient) BusinessToConsumerCtx(ctx context.Context, amount float64, txnType txnType, customerNo, remarks, qeueuTimeOutURL, resultURL string) (*PokeaResParams, error) {
     URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/b2c/v1/paymentrequest")
 
     // OriginatorConversationID is optional for v1; include when available to align with docs
@@ -63,10 +63,10 @@ func (cl *DarajaClient) BusinessToConsumerCtx(ctx context.Context, amount float6
         commandID = "SalaryPayment"
     }
     payload := B2CReqParams{
-        InitiatorName:      cl.configs.DarajaInitiatorName,
+        InitiatorName:      cl.configs.PokeaInitiatorName,
         Amount:             amount,
         CommandID:          commandID,
-        PartyA:             cl.configs.DarajaBusinessConsumerPartyA,
+        PartyA:             cl.configs.PokeaBusinessConsumerPartyA,
         PartyB:             mobileNumber,
         Remarks:            remarks,
         QueueTimeOutURL:    qeueuTimeOutURL,

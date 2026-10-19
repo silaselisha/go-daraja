@@ -22,11 +22,11 @@ type C2BReqParams struct {
     ValidationURL   string `json:"ValidationURL"`
 }
 
-func (cl *DarajaClient) CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error) {
+func (cl *PokeaClient) CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) (*PokeaResParams, error) {
     return cl.CustomerToBusinessCtx(context.Background(), confirmationURL, validationURL, responseType)
 }
 
-func (cl *DarajaClient) CustomerToBusinessCtx(ctx context.Context, confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error) {
+func (cl *PokeaClient) CustomerToBusinessCtx(ctx context.Context, confirmationURL, validationURL string, responseType b2cType) (*PokeaResParams, error) {
     URL := fmt.Sprintf("%s/%s", builder.BaseUrlBuilder(cl.configs.MpesaEnvironment), "mpesa/c2b/v1/registerurl")
 
 	var command string
@@ -39,7 +39,7 @@ func (cl *DarajaClient) CustomerToBusinessCtx(ctx context.Context, confirmationU
         command = "Cancelled"
     }
 	payload := C2BReqParams{
-		ShortCode:       cl.configs.DarajaBusinessShortCode,
+		ShortCode:       cl.configs.PokeaBusinessShortCode,
 		ResponseType:    command,
 		ConfirmationURL: confirmationURL,
 		ValidationURL:   validationURL,

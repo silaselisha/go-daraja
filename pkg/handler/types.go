@@ -1,28 +1,29 @@
 package handler
 
 import (
+    "context"
     "net/http"
     "time"
 
     "github.com/silaselisha/pokea/pkg/internal/config"
 )
 
-type Daraja interface {
-	NIPush(description string, phoneNumber string, amount float64) (*DarajaResParams, error)
-	BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, timeoutURL, resultURL string) (*DarajaResParams, error)
-	CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) (*DarajaResParams, error)
-	BusinessBuyGoods(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string) (*DarajaResParams, error)
-	BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) (*DarajaResParams, error)
+type Pokea interface {
+	NIPush(description string, phoneNumber string, amount float64) (*PokeaResParams, error)
+	BusinessToConsumer(amount float64, txnType txnType, customerNo, remarks, timeoutURL, resultURL string) (*PokeaResParams, error)
+	CustomerToBusiness(confirmationURL, validationURL string, responseType b2cType) (*PokeaResParams, error)
+	BusinessBuyGoods(amount float64, username, shortCode, commandID, remarks, resultURL, queueTimeOutURL, receiverID, senderID, accountRefrence string) (*PokeaResParams, error)
+	BusinessExpressCheckout(paymentRef, callbackURL, partnerName, receiver string, amount float64) (*PokeaResParams, error)
 }
 
-type DarajaClient struct {
+type PokeaClient struct {
 	configs     *config.Configs
 	AccessToken string
     httpClient  *http.Client
     logger      Logger
 }
 
-type DarajaResParams struct {
+type PokeaResParams struct {
 	ConversationID           string
 	OriginatorConversationID string
 	ResponseCode             string
@@ -32,10 +33,10 @@ type DarajaResParams struct {
 		Code   string `json:"code"`
 		Status string `json:"status"`
 	}
-	DarajaErrorParams
+	PokeaErrorParams
 }
 
-type DarajaErrorParams struct {
+type PokeaErrorParams struct {
 	RequestID    string `json:"requestId"`
 	ErrorCode    string `json:"errorCode"`
 	ErrorMessage string `json:"errorMessage"`
@@ -88,9 +89,9 @@ func WithLogger(l Logger) Option {
     return func(o *clientOptions) { o.logger = l }
 }
 
-// NewClient constructs a Daraja client using functional options.
+// NewClient constructs a Pokea client using functional options.
 // Defaults: sandbox environment, 15s HTTP timeout, OS envs.
-func NewClient(opts ...Option) (*DarajaClient, error) {
+func NewClient(opts ...Option) (*PokeaClient, error) {
     // Gather options
     var o clientOptions
     for _, opt := range opts {
@@ -116,12 +117,12 @@ func NewClient(opts ...Option) (*DarajaClient, error) {
     }
 
     // Authenticate to fetch access token
-    auth, err := ClientAuth(cfg)
+    auth, err := ClientAuthWithClient(context.Background(), cfg, httpClient)
     if err != nil {
         return nil, err
     }
 
-    return &DarajaClient{
+    return &PokeaClient{
         configs:     cfg,
         AccessToken: auth.AccessToken,
         httpClient:  httpClient,
@@ -129,9 +130,9 @@ func NewClient(opts ...Option) (*DarajaClient, error) {
     }, nil
 }
 
-// NewDarajaClient maintains backward compatibility for the existing API.
-// It delegates to NewClient with an optional .env path.
-func NewDarajaClient(path string) (Daraja, error) {
+// NewPokeaClient constructs a client from an optional .env path.
+// It delegates to NewClient.
+func NewPokeaClient(path string) (Pokea, error) {
     cl, err := NewClient(WithEnvFile(path))
     if err != nil {
         return nil, err
